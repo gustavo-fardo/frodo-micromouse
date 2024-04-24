@@ -1,5 +1,5 @@
-#ifndef CONSTANTS
-#define CONSTANTS
+#ifndef _PINS
+#define _PINS
 
 //pins
 #define PUSH_BUTTON1 8
@@ -14,6 +14,10 @@
 #define XSHUT1 13
 #define XSHUT2 15
 #define XSHUT3 14
+#define MOTOR_ESQ_PLUS 11
+#define MOTOR_ESQ_MINUS 10
+#define MOTOR_DIR_PLUS 5
+#define MOTOR_DIR_MINUS 6
 
 
 #endif
