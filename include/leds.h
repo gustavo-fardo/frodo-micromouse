@@ -15,7 +15,11 @@
 #define LED_RIGHT 0b10000000
 #define LED_ALL   0b11111111
 
+//seta um led ou coleção de leds para um valor 1 ou 0, juntar LEDs com LED1 | LED2 | LED3 ... etc
 void setLED(uint8_t led, bool on);
+//pega os valores de LED atual e os seta no shift register
 void updateLEDs();
+//faz o setup inicial dos pinos de saída e entrada dos LEDs
+void setupLEDs();
 
 #endif
