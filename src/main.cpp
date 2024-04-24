@@ -6,10 +6,12 @@ int myFunction(int, int);
 
 void setup() {
   
-  setupLEDs();
+  pinMode(13,OUTPUT);
 }
 
 void loop() {
-  setLED(LED_ALL,HIGH);
-  updateLEDs();
+  delay(1000);
+  digitalWrite(13,HIGH);
+  delay(1000);
+  digitalWrite(13,LOW);
 }

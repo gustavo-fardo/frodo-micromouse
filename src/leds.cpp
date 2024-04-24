@@ -7,7 +7,6 @@ void setLED(uint8_t led, bool on)
 {
     led_data = (on) ? led_data | led : led_data & (~led);
 }
-
 void updateLEDs()
 {
     digitalWrite(RCLK,LOW);
