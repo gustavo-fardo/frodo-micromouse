@@ -2,7 +2,7 @@
 #include <leds.h>
 #include <tof.h>
 #include <buttons.h>
-
+#include <encoder.h>
 void setup() {
   setupTOF();
   setupButtons();
@@ -12,6 +12,7 @@ void setup() {
   readButtons();
   setLED(1,1);
   updateLEDs();
+  setupEncoders();
 }
 
 void loop() {
