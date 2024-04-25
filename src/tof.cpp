@@ -4,8 +4,8 @@
 #include <constants.h>
 #include <pins.h>
 
-int16_t dist_left, dist_right, dist_front_left, dist_front_right;
-bool wall_left,wall_front,wall_right;
+int16_t dist_left=0, dist_right=0, dist_front_left=0, dist_front_right=0;
+bool wall_left=0,wall_front=0,wall_right=0;
 
 VL53L0X sensor_left;
 VL53L0X sensor_front_left;

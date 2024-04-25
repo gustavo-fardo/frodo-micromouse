@@ -3,16 +3,23 @@
 #include <tof.h>
 #include <buttons.h>
 #include <encoder.h>
+#include <constants.h>
+#include <PID.h>
 void setup() {
   setupTOF();
   setupButtons();
   setupLEDs();
+  setupEncoders();
+  setupPID();
+  
   pinMode(13,OUTPUT);
   readTOF();
   readButtons();
   setLED(1,1);
   updateLEDs();
-  setupEncoders();
+  
+  setVW(0,0);
+  
 }
 
 void loop() {

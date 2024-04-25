@@ -2,10 +2,11 @@
 #include<pins.h>
 
 //positive is cw and negative is ccw
-int16_t count_left,count_right;
+int16_t count_left=0,count_right=0;
 void encoderCall(int16_t* count, uint8_t a_pin,uint8_t b_pin);
 void encoderLeft();
 void encoderRight();
+
 void setupEncoders()
 {
     pinMode(ENCODER_A_DIR,INPUT);
