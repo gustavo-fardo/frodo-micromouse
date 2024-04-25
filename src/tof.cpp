@@ -3,16 +3,20 @@
 #include <Wire.h>
 #include <constants.h>
 #include <pins.h>
+
+int16_t dist_left, dist_right, dist_front_left, dist_front_right;
+bool wall_left,wall_front,wall_right;
+
 VL53L0X sensor_left;
 VL53L0X sensor_front_left;
 VL53L0X sensor_front_right;
 VL53L0X sensor_right;
 void readTOF()
 {
-    dist_left = sensor_left.readRangeContinuousMillimeters()*0.1f;
-    dist_right = sensor_right.readRangeContinuousMillimeters()*0.1f;
-    dist_front_left = sensor_front_left.readRangeContinuousMillimeters()*0.1f;
-    dist_front_right = sensor_front_right.readRangeContinuousMillimeters()*0.1f;
+    dist_left = sensor_left.readRangeContinuousMillimeters()- TOF_OFFSET;
+    dist_right = sensor_right.readRangeContinuousMillimeters()- TOF_OFFSET;
+    dist_front_left = sensor_front_left.readRangeContinuousMillimeters()- TOF_OFFSET;
+    dist_front_right = sensor_front_right.readRangeContinuousMillimeters()-TOF_OFFSET;
 
     wall_front = (dist_front_left+dist_front_right <= FRONT_WALL_DIST*2) ? true : false;
     wall_left = (dist_left <= SIDE_WALL_DIST) ? true: false;
