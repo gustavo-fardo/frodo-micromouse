@@ -16,9 +16,20 @@
 #define PWM_MINIMUM 15
 #define PWM_MAX 255
 
+//para pid dos motores
+#define Kp 16.0f
+#define Kd 0.005f
+#define Ki 400.0f
 
-#define Kp 0.5f
-#define Kd 0.5f
-#define Ki 0.5f
+//para pid de controle de drift angular
+#define Kp_theta 1.0f
+#define Kd_theta 1.0f
+
+//para pid de controle de drift ao rotacionar
+#define Kp_x 1.0f
+#define Kd_x 1.0f
+
+
+
 
 #endif

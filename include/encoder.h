@@ -5,7 +5,9 @@
 
 
 
-extern int16_t count_left,count_right;
+extern int32_t count_left,count_right;
+float getV1();
+float getV2();
 void setupEncoders();
 
 #endif
