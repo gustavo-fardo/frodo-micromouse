@@ -5,11 +5,13 @@
 #include <encoder.h>
 #include <constants.h>
 #include <PID.h>
+#include <pins.h>
 void setup() {
+  setupEncoders();
   setupTOF();
   setupButtons();
   setupLEDs();
-  setupEncoders();
+  
   setupPID();
   
   pinMode(13,OUTPUT);
@@ -17,14 +19,14 @@ void setup() {
   readButtons();
   setLED(1,1);
   updateLEDs();
-  
-  setVW(0,0);
-  
+  setPID(PID_AUTO_STOP_X);
+  setXTheta(180,0);
+  setVW(60,0);
+  digitalWrite(13,LOW);
 }
 
 void loop() {
-  delay(1000);
-  digitalWrite(13,HIGH);
-  delay(1000);
-  digitalWrite(13,LOW);
+  if(MoveEnded())
+    digitalWrite(13,HIGH);
+  
 }

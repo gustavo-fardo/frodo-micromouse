@@ -5,7 +5,7 @@
 //positive is cw and negative is ccw
 int32_t count_left=0,count_right=0;
 unsigned long micros1=1,micros2=1;
-unsigned long diff1=1,diff2=1;
+long diff1=10000000,diff2=10000000;
 float f1=0,f2=0;
 void encoderCall(int16_t* count, uint8_t a_pin,uint8_t b_pin);
 void encoderLeft();
@@ -21,15 +21,19 @@ void setupEncoders()
     attachInterrupt(digitalPinToInterrupt(ENCODER_A_DIR),encoderRight,CHANGE);
 }
 
-void encoderCall(int32_t* count,unsigned long* dif,unsigned long* mics, uint8_t a_pin,uint8_t b_pin)
+void encoderCall(int32_t* count,long* dif,unsigned long* mics, uint8_t a_pin,uint8_t b_pin)
 {
+    bool negative = false;
     if(digitalRead(a_pin) == digitalRead(b_pin))
+    {
         *count = *count - 1; //ccw
+        negative = true;
+    }
     else
         *count = *count + 1; //cw
 
     unsigned long aux = micros();
-    *dif = aux - *mics;
+    *dif = (aux - *mics)*((negative)? -1 : 1);
     *mics = aux;
 }
 void encoderLeft()
@@ -43,9 +47,13 @@ void encoderRight()
 
 float getV1()
 {
-    return 1000000.0f/406.9f/(float) diff1*DIAMETER;
+    if(micros() -micros1> 10000)
+        diff1 = 1000000;
+    return 1000000.0f/406.9f/(float) diff1*DIAMETER*3.1415;
 }
 float getV2()
 {
-    return 1000000.0f/406.9f/(float) diff2*DIAMETER;
+    if(micros() -micros2> 10000)
+        diff2 = 1000000;
+    return 1000000.0f/406.9f/(float) diff2*DIAMETER*3.1415;
 }

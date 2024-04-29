@@ -9,8 +9,6 @@
 #define DISTANCE_WHEELS_INVERSED 1/DISTANCE_WHEELS
 #define INVERSE_COUNTS_PER_ROT 1/COUNTS_PER_ROT
 
-
-
 uint8_t pid_control = PID_DEFAULT;
 void setPID(uint8_t control)
 {
@@ -40,19 +38,12 @@ float etheta=0,ex=0;
 uint8_t finished=0;
 bool MoveEnded()
 {
-    switch (pid_control & (PID_AUTO_STOP_X ||PID_AUTO_STOP_THETA))
-    {
-    case PID_AUTO_STOP_X:
-        return pid_control == 0b10;
-        break;
-    case PID_AUTO_STOP_THETA:
-        return pid_control == 0b01;
-        break;
-    
-    default:
-        return pid_control == 0b11;
-        break;
-    }
+    uint8_t control = 0;
+    if(pid_control & PID_AUTO_STOP_X)
+        control|= 0b10;
+    if(pid_control & PID_AUTO_STOP_THETA)
+        control|= 0b1;
+    return finished == control;
 }
 void PID()
 {
@@ -62,7 +53,7 @@ void PID()
         ideal_w=0;
         finished |= 0b01;
     }
-    if(pid_control & PID_AUTO_STOP_THETA && abs(ideal_x) < abs(getX()))
+    if(pid_control & PID_AUTO_STOP_X && abs(ideal_x) < abs(getX()))
     {
         ideal_v = 0;
         finished |= 0b10;
@@ -71,26 +62,26 @@ void PID()
     float mod1,mod2;
     float e1n=ideal_v-ideal_w-getV1();
     float e2n=ideal_v+ideal_w-getV2();
-    integral1 += e1n;
-    integral2 += e2n;
-
+    integral1 += e1n*0.01;
+    integral2 += e2n*0.01;
+    
     //sets pid for w and v control
-    mod1 = e1n*Kp + (e1n- e1)*Kd + integral1*Ki;
-    mod2 = e2n*Kp + (e2n - e2)*Kd + integral2*Ki;
+    mod1 = e1n*Kp + (e1n- e1)*100*Kd + integral1*Ki;
+    mod2 = e2n*Kp + (e2n - e2)*Kd*100 + integral2*Ki;
     e1 =e1n;
     e2 = e2n;
-    
+
     //sets PD for drifts (not included I term, may add later )
     float modtheta = 0;
     if(pid_control & PID_STRAIGHT)
     {
         float ethethan = -getTheta();
-        modtheta = ethethan*Kp_theta+(ethethan-etheta)*Kd_theta;
+        modtheta = ethethan*Kp_theta+(ethethan-etheta)*Kd_theta*100;
         etheta = ethethan;
     } else if (pid_control & PID_INPLACE)
     {
         float exn = - getX();
-        mod1 += exn*Kp_x + (exn-ex)*Kd_x;
+        mod1 += exn*Kp_x + (exn-ex)*Kd_x*100;
         ex = exn;
     }
 
@@ -102,7 +93,7 @@ void PID()
         motor(MOTOR_ESQ_PLUS,MOTOR_ESQ_MINUS,-modtheta);
     else
         motor(MOTOR_ESQ_PLUS,MOTOR_ESQ_MINUS,mod1-modtheta);
-    if(ideal_v+ideal_w  == 0.0)
+   if(ideal_v+ideal_w  == 0.0)
         motor(MOTOR_DIR_PLUS,MOTOR_DIR_MINUS,modtheta);
     else
         motor(MOTOR_DIR_PLUS,MOTOR_DIR_MINUS,mod2+modtheta);
@@ -112,6 +103,7 @@ void PID()
 //SETS PWM of MOTOR
 void motor(uint8_t m_plus,uint8_t m_minus, float mod)
 {
+    uint8_t plus = m_plus,minus = m_minus;
     if(mod == 0.0)
     {
         digitalWrite(m_minus,LOW);
@@ -120,10 +112,9 @@ void motor(uint8_t m_plus,uint8_t m_minus, float mod)
     }
     if(mod< 0)
     {
-        mod = -mod;
-        uint8_t aux = m_plus;
-        m_plus = m_minus;
-        m_minus = aux;
+        mod = - mod;
+        plus = m_minus;
+        minus = m_plus;
     }
     if(mod < PWM_MINIMUM)
     {
@@ -133,9 +124,8 @@ void motor(uint8_t m_plus,uint8_t m_minus, float mod)
     }
     if(mod> PWM_MAX)
         mod = PWM_MAX;
-
-    digitalWrite(m_minus,LOW);
-    analogWrite(m_plus,(uint8_t) mod);
+    digitalWrite(minus,LOW);
+    analogWrite(plus,(uint8_t) mod);
 
 
 }
@@ -146,6 +136,7 @@ void resetIntegrals()
     integral2 = 0;
     count_left = 0;
     count_right = 0;
+    finished=0;
 }
 
 void setupPID()
@@ -172,14 +163,15 @@ void setupPID()
 
 }
 
-ISR(TIMER0_COMPA_vect)
+
+ISR(TIMER1_COMPA_vect)
 {
     PID();
 }
 //x andado desde o ultimo reset em mm
 float getX()
 {
-    return (count_left+count_right)*0.5f*DIAMETER*INVERSE_COUNTS_PER_ROT;
+    return (count_left+count_right)*0.5f*DIAMETER*INVERSE_COUNTS_PER_ROT*3.1415;
 }
 //theta andado desde o ultimo reset em radianos
 float getTheta()
@@ -195,5 +187,5 @@ float getTheta()
             return (dist_right-dist_left)/(float)(dist_left+dist_right)*2;
         }
     }
-    return (count_right-count_left)*DIAMETER*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED;
+    return (count_right-count_left)*DIAMETER*3.1415*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED;
 }

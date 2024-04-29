@@ -10,16 +10,16 @@
 #define DISTANCE_WHEELS 110.0 //(mm)
 
 //encoder constants
-#define COUNTS_PER_ROT 406.9f
+#define COUNTS_PER_ROT 406.3f
 
 // minimal PWM
 #define PWM_MINIMUM 15
 #define PWM_MAX 255
 
 //para pid dos motores
-#define Kp 16.0f
-#define Kd 0.005f
-#define Ki 400.0f
+#define Kp 16
+#define Kd 0.03
+#define Ki 400
 
 //para pid de controle de drift angular
 #define Kp_theta 1.0f
