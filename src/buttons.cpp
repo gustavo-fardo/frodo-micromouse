@@ -11,25 +11,25 @@ void setupButtons()
 }
 
 uint8_t pushedButtons = 0;
+uint8_t lastValue= 0b11111111;
 uint8_t readButtons() 
 {
-  uint8_t aux = pushedButtons;
+  return pushedButtons;
+}
+void resetButtons()
+{
   pushedButtons = 0;
-  return aux;
 }
 ISR (PCINT0_vect)
 {
-  if(!digitalRead(PUSH_BUTTON1) && !digitalRead(PUSH_BUTTON2))
+  if(!digitalRead(PUSH_BUTTON1)&& lastValue & 0b01)
   {
-    pushedButtons = 0b11;
-  }
-  else if(!digitalRead(PUSH_BUTTON1))
-  {
-    pushedButtons = 0b01;
+    pushedButtons |= 0b01;
     //pb1 pushed
-  }else if (!digitalRead(PUSH_BUTTON2))
+  }else if (!digitalRead(PUSH_BUTTON2)&& lastValue & 0b10)
   {
-    pushedButtons = 0b10;
+    pushedButtons |= 0b10;
     //pb2 pushed
   }
+  lastValue = digitalRead(PUSH_BUTTON1) | (digitalRead(PUSH_BUTTON2)<<1);
 }

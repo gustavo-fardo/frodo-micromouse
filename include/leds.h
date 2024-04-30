@@ -6,7 +6,7 @@
 #define MB1       0b01000000
 #define MB2       0b00100000
 #define MB3       0b00010000
-#define M0        0b00001100
+#define MO        0b00001100
 #define MO1       0b00001000
 #define MO2       0b00000100
 #define LED_DIR   0b10000011

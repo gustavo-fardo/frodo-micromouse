@@ -10,6 +10,7 @@
 
 /* MANUAL
 - FAÇA O SETUP DO PID com setupPID(); uma única vez
+- Ative o pid com activate PID();
 
 toda vez que realizar uma ação:
 - faça o setup das configurações para a ação com setPID(control), utilizando as configurações acima, que podem ser conectadas
@@ -41,4 +42,6 @@ float getX();
 //retorna giro realizado em radianos
 float getTheta();
 //retorna true quando movimento de auto_stop acaba
-bool MoveEnded();
+bool moveEnded();
+//ativa todo o sistema de PID
+void activatePID(bool on);

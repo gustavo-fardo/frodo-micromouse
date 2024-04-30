@@ -8,11 +8,15 @@
 #define DIAMETER_INVERSED 1/DIAMETER
 #define DISTANCE_WHEELS_INVERSED 1/DISTANCE_WHEELS
 #define INVERSE_COUNTS_PER_ROT 1/COUNTS_PER_ROT
-
+bool pid_on = false;
 uint8_t pid_control = PID_DEFAULT;
 void setPID(uint8_t control)
 {
     pid_control = control;
+}
+void activatePID(bool on)
+{
+    pid_on = on;
 }
 
 float ideal_v=0,ideal_w=0;//in Hz
@@ -36,7 +40,7 @@ float e1=0,e2=0;
 float integral1=0,integral2=0;
 float etheta=0,ex=0;
 uint8_t finished=0;
-bool MoveEnded()
+bool moveEnded()
 {
     uint8_t control = 0;
     if(pid_control & PID_AUTO_STOP_X)
@@ -166,7 +170,8 @@ void setupPID()
 
 ISR(TIMER1_COMPA_vect)
 {
-    PID();
+    if(pid_on)
+        PID();
 }
 //x andado desde o ultimo reset em mm
 float getX()
