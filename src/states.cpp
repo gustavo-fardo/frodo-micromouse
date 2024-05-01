@@ -8,14 +8,19 @@ void walkState();
 
 void (*baseState) () = beginState;
 
-bool executionAlgorithm();
-bool floodfillSearch();
-bool dfsSearch();
-bool bfsSearch();
+
 bool (*walkAlgorithm)();
 
+//modo de busca atual 0 - competição 1 - bfs, 2 - dfs
 uint8_t modoBusca= 0;
+// modo de operação atual 0 - exploração 1 - resolução
 uint8_t modoOperacao = 0;
+
+/* beginState
+* @brief estado de inicio do micromouse, lê os botões e atualiza os modos de busca e operação
+* @return void
+*   - 01/05/2024: criado comentário, começado a documentar. - @walger-lucas
+*/
 void beginState()
 {
     uint8_t buttons = readButtons();
@@ -76,7 +81,11 @@ void beginState()
 
 }
 
-
+/* walkState
+* @brief estado de leitura de instrução e atuação, chamando os algorítimos de busca e execução
+* @return void
+*   - 01/05/2024: criado comentário, começado a documentar. - @walger-lucas
+*/
 void walkState()
 {
     if(readButtons() & 0b01)
@@ -99,15 +108,3 @@ void walkState()
 }
 
 
-bool executionAlgorithm()
-{
-    return false;
-}
-bool floodfillSearch()
-{return false;}
-
-bool dfsSearch()
-{return false;}
-
-bool bfsSearch()
-{return false;}
