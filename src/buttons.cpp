@@ -2,8 +2,8 @@
 #include<buttons.h>
 #include<pins.h>
 
-uint8_t pushedButtons = 0;
-uint8_t lastValue= 0b11111111;
+uint8_t pushedButtons = 0; // botões apertados atuais
+uint8_t lastValue= 0b11111111; // ultimo valor lido pelos botões
 
 void setupButtons()
 {
@@ -22,13 +22,14 @@ void resetButtons()
 {
   pushedButtons = 0;
 }
+//interrupção de tratamento dos botões
 ISR (PCINT0_vect)
 {
-  if(!digitalRead(PUSH_BUTTON1)&& lastValue & 0b01)
+  if(!digitalRead(PUSH_BUTTON1)&& lastValue & 0b01) // caso PB1 =0 e anterior =1, falling edge
   {
     pushedButtons |= 0b01;
     //pb1 pushed
-  }else if (!digitalRead(PUSH_BUTTON2)&& lastValue & 0b10)
+  }else if (!digitalRead(PUSH_BUTTON2)&& lastValue & 0b10) //caso PB2=0 e anterior = 1, falling edge
   {
     pushedButtons |= 0b10;
     //pb2 pushed

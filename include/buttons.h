@@ -1,10 +1,36 @@
+/* @name BUTTONS
+* @author @walger-lucas
+* @date 30/04/2024
+* @paragraph Funções para interface com os botões
+*/
+
 #ifndef _BUTTONS
 #define BUTTONS
 #include<Arduino.h>
-//setup button PINS and registers
+/* @name setupButtons
+* @brief Faz setup dos pinos de botões e dos interrupts ligados a eles.
+* @return void
+* 
+* @date alterações:
+*   - 30/04/2024: criado comentário, começado a documentar. - @walger-lucas
+*/
 void setupButtons();
-//return witch buttons are being pressed right now
+
+
+/* @name readButtons
+* @brief Informa botões clicados desde o último resetButtons()
+* @return Byte com os 2 bits iniciais informando se SW0 e SW1, respectivamente, sofreram um clique, FALLING EDGE, desde o último resetButtons.
+* 
+* @date alterações:
+*   - 30/04/2024: criado comentário, começado a documentar. - @walger-lucas
+*/
 uint8_t readButtons();
-//zeroes buttons, as if already analized
+
+/* @name resetButtons()
+* @brief reseta byte de botões clicados, dando acknowledge nos botões anteriores dados.
+* @return void
+* @date alterações:
+*   - 30/04/2024: criado comentário, começado a documentar. - @walger-lucas
+*/
 void resetButtons();
 #endif
