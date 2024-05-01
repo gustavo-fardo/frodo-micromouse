@@ -20,6 +20,23 @@ toda vez que realizar uma ação:
 #pragma once
 #include <Arduino.h>
 
+// minimal PWM
+#define PWM_MINIMUM 15
+// maximum PWM
+#define PWM_MAX 255
+
+//para pid dos motores
+#define Kp 16
+#define Kd 0.03
+#define Ki 400
+
+//para pid de controle de drift angular
+#define Kp_theta 1.0f
+#define Kd_theta 1.0f
+
+//para pid de controle de drift ao rotacionar
+#define Kp_x 1.0f
+#define Kd_x 1.0f
 
 //Bits de configuração para a função setPID(controls)
 #define PID_STRAIGHT 0b01
@@ -86,7 +103,7 @@ void setupPID();
  * @example  setPID(PID_STRAIGHT | PID_AUTO_STOP_X | PID_USE_TOF); 
  * @example  seta PID para utilizar compensação se drift angular, utilizar parada automática de translação e TOF para calculo de erro angular.
  * 
- * alterações:
+ * @date alterações:
     - 30/04/2024: criado comentário, começado a documentar. -  @walger-lucas 
 */
 void setPID(uint8_t control);
