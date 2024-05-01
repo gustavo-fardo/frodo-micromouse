@@ -80,7 +80,7 @@ void setXTheta(float x, float theta);
 void resetIntegrals();
 
 /* @name setupPID
-* @brief Faz setup dos pinos dos motores e da interrupção de timer do PID (que utiliza o timer1 e periodo de 10ms).
+* @brief Faz setup dos pinos dos motores, encoders e da interrupção de timer do PID (que utiliza o timer1 e periodo de 10ms).
 * @return void
 * @attention Para função do pid PID_USE_TOF, o setup do TOF deve ser inicializado anteriormente.
 * @date alterações:

@@ -6,11 +6,12 @@
 #include <PID.h>
 #include <pins.h>
 #include <states.h>
+
 void setup() {
   setupTOF();
   setupButtons();
   setupLEDs();
-  setupPID();
+  setupPID(); //internamente chama setupEncoders(), não adicionar a parte
   activatePID(false);
 }
 
