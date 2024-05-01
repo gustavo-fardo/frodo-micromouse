@@ -58,7 +58,7 @@ void beginState()
             }
         }
         delay(1000);
-        setLED(LED_DIR|LED_FRONT|LED_RIGHT,LOW);
+        setLED(LED_DIR,LOW);
         updateLEDs();
         if(modoOperacao == 1)
         {

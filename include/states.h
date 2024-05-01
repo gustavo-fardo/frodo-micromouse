@@ -1,3 +1,9 @@
+/* @name STATES
+* @author @walger-lucas
+* @date 30/04/2024
+* @paragraph Interface com a state_machine
+*/
+
 #pragma once
 #include <Arduino.h>
 

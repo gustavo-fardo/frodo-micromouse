@@ -1,3 +1,8 @@
+/* @name ENCODERS
+* @author @walger-lucas
+* @date 30/04/2024
+* @paragraph Funções para interface com os encoders dos motores
+*/
 #ifndef _ENCODER
 #define _ENCODER
 #include <Arduino.h>
