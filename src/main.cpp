@@ -2,17 +2,16 @@
 #include <leds.h>
 #include <tof.h>
 #include <buttons.h>
-#include <encoder.h>
 #include <constants.h>
 #include <PID.h>
 #include <pins.h>
 #include <states.h>
 void setup() {
-  setupEncoders();
   setupTOF();
   setupButtons();
   setupLEDs();
   setupPID();
+  activatePID(false);
 }
 
 

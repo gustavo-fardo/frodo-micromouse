@@ -8,22 +8,16 @@ void walkState();
 
 void (*baseState) () = beginState;
 
-
 bool executionAlgorithm();
 bool floodfillSearch();
-
 bool dfsSearch();
-
 bool bfsSearch();
-
 bool (*walkAlgorithm)();
 
 uint8_t modoBusca= 0;
 uint8_t modoOperacao = 0;
 void beginState()
 {
-    activatePID(false); // não deixe que haja PID nesse estado
-
     uint8_t buttons = readButtons();
     if(buttons == 0)
     {
@@ -75,6 +69,7 @@ void beginState()
             walkAlgorithm = search[modoBusca];
             
         }
+        activatePID(true);
         baseState = walkState;
     }
 
@@ -85,7 +80,10 @@ void beginState()
 void walkState()
 {
     if(readButtons() & 0b01)
+    {
         baseState = beginState;
+        activatePID(false);
+    }
     resetButtons();
 
     ///função para controlar os movimentos
@@ -94,6 +92,7 @@ void walkState()
     if(walkAlgorithm())
     {
         baseState = beginState;
+        activatePID(false);
     }
     //}
 

@@ -1,6 +1,10 @@
 
 #include<buttons.h>
 #include<pins.h>
+
+uint8_t pushedButtons = 0;
+uint8_t lastValue= 0b11111111;
+
 void setupButtons()
 {
   pinMode(PUSH_BUTTON1,INPUT_PULLUP);
@@ -10,8 +14,6 @@ void setupButtons()
   PCMSK0 |=0b1001;
 }
 
-uint8_t pushedButtons = 0;
-uint8_t lastValue= 0b11111111;
 uint8_t readButtons() 
 {
   return pushedButtons;
