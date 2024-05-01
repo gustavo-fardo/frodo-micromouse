@@ -9,13 +9,15 @@ void setLED(uint8_t led, bool on)
 }
 void updateLEDs()
 {
-    digitalWrite(RCLK,LOW);
+    digitalWrite(RCLK,LOW); // seta para low LD (RCLK)
+    //Escreve bit a bit na saída e da um pulso de CLK serial
     for(char i =0 ; i < 8; i++)
     {
-        digitalWrite(SR, (led_data >> i) & 0b1);
+        digitalWrite(SR, (led_data >> i) & 0b1); 
         digitalWrite(SRCLK,HIGH);
         digitalWrite(SRCLK,LOW);
     }
+    //seta LD para HIGH, mostrando os valores carregados
     digitalWrite(RCLK,HIGH);
 }
 
