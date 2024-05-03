@@ -20,6 +20,7 @@ uint8_t modoOperacao = 0;
 * @brief estado de inicio do micromouse, lê os botões e atualiza os modos de busca e operação
 * @return void
 *   - 01/05/2024: criado comentário, começado a documentar. - @walger-lucas
+*   - 02/05/2024: adição de interface com movements.cpp. - @walger-lucas
 */
 void beginState()
 {
@@ -75,6 +76,7 @@ void beginState()
             
         }
         activatePID(true);
+        setInstruction(CODES::NONE,MODES::EMPTY);
         baseState = walkState;
     }
 
@@ -85,6 +87,7 @@ void beginState()
 * @brief estado de leitura de instrução e atuação, chamando os algorítimos de busca e execução
 * @return void
 *   - 01/05/2024: criado comentário, começado a documentar. - @walger-lucas
+*   - 02/05/2024: adição de interface com movements.cpp. - @walger-lucas
 */
 void walkState()
 {
@@ -94,16 +97,14 @@ void walkState()
         activatePID(false);
     }
     resetButtons();
-
-    ///função para controlar os movimentos
-    //se busca, em algum momento ler as paredes
-    // if acabou o último movimento {
-    if(walkAlgorithm())
+    if(instructMovement())
     {
-        baseState = beginState;
-        activatePID(false);
+        if(walkAlgorithm())
+        {
+            baseState = beginState;
+            activatePID(false);
+        }
     }
-    //}
 
 }
 

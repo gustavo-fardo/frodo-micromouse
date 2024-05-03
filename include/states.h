@@ -6,6 +6,7 @@
 
 #pragma once
 #include <Arduino.h>
+#include <movements.h>
 
 /* baseState
 * @brief função que chama as funcionalidades de um estado do micromouse, como a de leitura de entradas e execução de tarefas

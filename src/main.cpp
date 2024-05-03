@@ -7,6 +7,9 @@
 #include <pins.h>
 #include <states.h>
 
+//TODO funções para lidar com o mapa e paredes do labirinto (não aqui é claro)
+
+
 void setup() {
   setupTOF();
   setupButtons();
