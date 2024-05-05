@@ -2,16 +2,16 @@
 #include<buttons.h>
 #include<pins.h>
 
-uint8_t pushedButtons = 0; // botões apertados atuais
-uint8_t lastValue= 0b11111111; // ultimo valor lido pelos botões
+volatile uint8_t pushedButtons = 0; // botões apertados atuais
+volatile uint8_t lastValue= 0b11111111; // ultimo valor lido pelos botões
 
 void setupButtons()
 {
   pinMode(PUSH_BUTTON1,INPUT_PULLUP);
   pinMode(PUSH_BUTTON2,INPUT_PULLUP);
   //setup pb interruptions
-  PCICR |= 0b010;
-  PCMSK0 |=0b1001;
+  PCICR |= 0b1;
+  PCMSK0 |= 0b10001;
 }
 
 uint8_t readButtons() 
@@ -34,5 +34,6 @@ ISR (PCINT0_vect)
     pushedButtons |= 0b10;
     //pb2 pushed
   }
+  
   lastValue = digitalRead(PUSH_BUTTON1) | (digitalRead(PUSH_BUTTON2)<<1);
 }

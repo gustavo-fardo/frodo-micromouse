@@ -15,7 +15,7 @@ uint8_t pid_control = PID_DEFAULT; //stores configuration of PID
 float e1=0,e2=0;    //LAST ERRORS OF MOTOR 1 AND 2
 float integral1=0,integral2=0; //INTEGRAL ERROR OF THE MOTORS
 float etheta=0,ex=0; // LAST THETA ERROR AND X ERROR
-uint8_t finished=0; // 0B1 WHEN ROTATION ENDED, 0B10 WHEN TRANSLATION ENDED ON AUTO_STOP MODE
+volatile uint8_t finished=0; // 0B1 WHEN ROTATION ENDED, 0B10 WHEN TRANSLATION ENDED ON AUTO_STOP MODE
 float ideal_v=0,ideal_w=0;// Expected values in mm/s and rad/s
 float ideal_x = 0, ideal_theta = 0; //Expected values in mm and rad, only valid to AUTO-STOP
 

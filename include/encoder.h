@@ -11,7 +11,7 @@
 #define COUNTS_PER_ROT 406.3f
 
 //TOTAL COUNTS LEFT ROTATION AND RIGHT ROTATION
-extern int32_t count_left,count_right;
+extern volatile int32_t count_left,count_right;
 
 
 /* @name getV1

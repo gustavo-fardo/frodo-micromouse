@@ -4,13 +4,13 @@
 #include<constants.h>
 
 //positive is cw and negative is ccw
-int32_t count_left=0,count_right=0;
+volatile int32_t count_left=0,count_right=0;
 
 //microseconds of last encoder interrupt, left and right
-unsigned long micros1=1,micros2=1;
+volatile unsigned long micros1=1,micros2=1;
 
 //delta time in micros of last pair of interrupts
-long diff1=10000000,diff2=10000000;
+volatile long diff1=10000000,diff2=10000000;
 
 void encoderCall(int16_t* count, uint8_t a_pin,uint8_t b_pin);
 void encoderLeft();
@@ -33,7 +33,7 @@ void setupEncoders()
 * @date alterações:
 *   - 30/04/2024: criado comentário, começado a documentar. - @walger-lucas
 */
-void encoderCall(int32_t* count,long* dif,unsigned long* mics, uint8_t a_pin,uint8_t b_pin)
+void encoderCall(volatile int32_t* count,volatile long* dif,volatile unsigned long* mics, uint8_t a_pin,uint8_t b_pin)
 {
     bool negative = false;
     if(digitalRead(a_pin) == digitalRead(b_pin))

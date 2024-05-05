@@ -26,7 +26,7 @@ bool instructMovement()
     case NONE:
         return true;
     case MOVEMENT:
-        return false;
+        return movement();
     case INPLACE_ROTATION:
         return false;
     case RADIUS_ROTATION:
@@ -54,6 +54,7 @@ bool movement()
     case 1:
         if(cur_instr.instr_mode == FORWARDS && wall_front)
         {
+            float dist =  dist_front_left+dist_front_right;
             if(dist_front_left+dist_front_right < 30.0*2)
             {
                 setVW(0,0);
