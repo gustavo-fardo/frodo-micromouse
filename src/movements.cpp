@@ -15,6 +15,7 @@ void setInstruction(CODES code ,MODES mode)
 {
     cur_instr.instr_code = code;
     cur_instr.instr_mode = mode;
+    state=0;
 }
 
 bool movement();
@@ -54,7 +55,6 @@ bool movement()
     case 1:
         if(cur_instr.instr_mode == FORWARDS && wall_front)
         {
-            float dist =  dist_front_left+dist_front_right;
             if(dist_front_left+dist_front_right < 30.0*2)
             {
                 setVW(0,0);
