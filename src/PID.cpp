@@ -92,6 +92,8 @@ bool moveEnded()
         control|= 0b10;
     if(pid_control & PID_AUTO_STOP_THETA)
         control|= 0b1;
+    if(control ==0)
+        return false;
     return finished == control;
 }
 /* @name PID
@@ -99,6 +101,7 @@ bool moveEnded()
 * @return void
 * @date alterações:
 *   - 30/04/2024: criado comentário, começado a documentar. - @walger-lucas
+*   -08/05/2024: direção do motor esquerdo trocado, por um motor dever ter a direção contrária do outro. -@walger-lucas
 */
 void PID()
 {
@@ -117,7 +120,7 @@ void PID()
     //does pid of each motor
     float mod1,mod2;
     //calcula erros atuais
-    float e1n=ideal_v-ideal_w-getV1();
+    float e1n=-ideal_v+ideal_w-getV1();
     float e2n=ideal_v+ideal_w-getV2();
     integral1 += e1n*0.01;
     integral2 += e2n*0.01;

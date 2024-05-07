@@ -38,7 +38,7 @@ bool instructMovement()
 
 bool movement()
 {
-    float spd = 200.0;
+    float spd = 400.0;
     switch (state)
     {
     case 0:

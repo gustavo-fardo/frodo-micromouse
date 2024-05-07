@@ -16,6 +16,8 @@ void setup() {
   setupLEDs();
   setupPID(); //internamente chama setupEncoders(), não adicionar a parte
   activatePID(false);
+  setLED(MO1|MB1,HIGH);
+  updateLEDs();
 }
 
 

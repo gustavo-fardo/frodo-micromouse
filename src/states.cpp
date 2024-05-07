@@ -21,6 +21,7 @@ uint8_t modoOperacao = 0;
 * @return void
 *   - 01/05/2024: criado comentário, começado a documentar. - @walger-lucas
 *   - 02/05/2024: adição de interface com movements.cpp. - @walger-lucas
+*   - 07/05/2024: adição de tempo e alteração de interface - @walger-lucas
 */
 void beginState()
 {
@@ -29,7 +30,7 @@ void beginState()
     {
         return;
     }
-    delay(100);//espera 100ms para caso de double click (busy wait é td bem aqui por não estar ocorrendo PID no momento)
+    delay(200);//espera 100ms para caso de double click (busy wait é td bem aqui por não estar ocorrendo PID no momento)
     buttons = readButtons();
     resetButtons();
     if(buttons == 0b01)
@@ -49,6 +50,9 @@ void beginState()
 
     } else if(buttons == 0b11)
     {
+        setLED(LED_ALL,LOW);
+        updateLEDs();
+
         //cria animação
         const uint8_t dir[3]= {LED_LEFT,LED_RIGHT,LED_FRONT};
         for(uint8_t j = 0; j<3;j++)
