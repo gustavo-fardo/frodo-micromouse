@@ -25,6 +25,7 @@ bool instructMovement()
     switch (cur_instr.instr_code)
     {
     case NONE:
+        setVW(0,0);
         return true;
     case MOVEMENT:
         return movement();
@@ -38,13 +39,13 @@ bool instructMovement()
 
 bool movement()
 {
-    float spd = 400.0;
+    float spd = 300.0;
     switch (state)
     {
     case 0:
-        setPID(PID_AUTO_STOP_X | PID_STRAIGHT | PID_USE_TOF);
+        setPID(PID_STRAIGHT|PID_AUTO_STOP_X);
         resetIntegrals();
-        setXTheta(300,0);
+        setXTheta(1000,0);
         
         if(cur_instr.instr_mode != FORWARDS)
             spd = -spd;

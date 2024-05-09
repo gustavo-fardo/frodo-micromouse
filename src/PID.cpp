@@ -18,7 +18,7 @@ float etheta=0,ex=0; // LAST THETA ERROR AND X ERROR
 volatile uint8_t finished=0; // 0B1 WHEN ROTATION ENDED, 0B10 WHEN TRANSLATION ENDED ON AUTO_STOP MODE
 float ideal_v=0,ideal_w=0;// Expected values in mm/s and rad/s
 float ideal_x = 0, ideal_theta = 0; //Expected values in mm and rad, only valid to AUTO-STOP
-
+float integral_theta = 0;
 /* motor
 * @brief Função seta motor dado com o valor de pwm igual a mod, alterando direções. 
 * @addindex m_plus  pino M1 do motor
@@ -117,11 +117,21 @@ void PID()
         finished |= 0b10; // seta fim do movimento linear
     }
 
+    //sets PD for drifts (not included I term, may add later )
+    float modtheta = 0;
+    if(pid_control & PID_STRAIGHT)
+    {
+        
+        float ethethan = -(count_left+count_right*1.01);
+        integral_theta += ethethan*0.01;
+        modtheta = ethethan*Kp_theta+(ethethan-etheta)*Kd_theta*100+Ki_theta*integral_theta*0.01;
+        etheta = ethethan;
+    }
     //does pid of each motor
     float mod1,mod2;
     //calcula erros atuais
-    float e1n=-ideal_v+ideal_w-getV1();
-    float e2n=ideal_v+ideal_w-getV2();
+    float e1n=-ideal_v+ideal_w-getV1()+modtheta;
+    float e2n=ideal_v+ideal_w-getV2()+modtheta;
     integral1 += e1n*0.01;
     integral2 += e2n*0.01;
     
@@ -132,14 +142,8 @@ void PID()
     e1 =e1n;
     e2 = e2n;
 
-    //sets PD for drifts (not included I term, may add later )
-    float modtheta = 0;
-    if(pid_control & PID_STRAIGHT)
-    {
-        float ethethan = -getTheta();
-        modtheta = ethethan*Kp_theta+(ethethan-etheta)*Kd_theta*100;
-        etheta = ethethan;
-    } else if (pid_control & PID_INPLACE)
+
+    if (pid_control & PID_INPLACE)
     {
         float exn = - getX();
         mod1 += exn*Kp_x + (exn-ex)*Kd_x*100;
@@ -148,13 +152,13 @@ void PID()
 
     //gives instructions to motors
     if(ideal_v-ideal_w == 0.0)
-        motor(MOTOR_ESQ_PLUS,MOTOR_ESQ_MINUS,-modtheta);
+        motor(MOTOR_ESQ_PLUS,MOTOR_ESQ_MINUS,0);
     else
-        motor(MOTOR_ESQ_PLUS,MOTOR_ESQ_MINUS,mod1-modtheta);
+        motor(MOTOR_ESQ_PLUS,MOTOR_ESQ_MINUS,mod1);
    if(ideal_v+ideal_w  == 0.0)
-        motor(MOTOR_DIR_PLUS,MOTOR_DIR_MINUS,modtheta);
+        motor(MOTOR_DIR_PLUS,MOTOR_DIR_MINUS,0);
     else
-        motor(MOTOR_DIR_PLUS,MOTOR_DIR_MINUS,mod2+modtheta);
+        motor(MOTOR_DIR_PLUS,MOTOR_DIR_MINUS,mod2);
     
 }
 
@@ -162,6 +166,7 @@ void resetIntegrals()
 {
     integral1 = 0;
     integral2 = 0;
+    integral_theta =0;
     count_left = 0;
     count_right = 0;
     finished=0;
@@ -197,12 +202,17 @@ ISR(TIMER1_COMPA_vect)
 {
     if(pid_on)
         PID();
+    else
+    {
+        motor(MOTOR_DIR_PLUS,MOTOR_DIR_MINUS,0);
+        motor(MOTOR_ESQ_PLUS,MOTOR_ESQ_MINUS,0);
+    }
 }
 
 float getX()
 {
     //x = (v1+v2)/2 = (c1+c2)*Diametro_rodas*pi/(counts_por_rotação*2)
-    return (count_left+count_right)*0.5f*DIAMETER*INVERSE_COUNTS_PER_ROT*3.1415;
+    return (-count_left+count_right*1.01)*0.5f*DIAMETER*INVERSE_COUNTS_PER_ROT*3.1415;
 }
 
 float getTheta()
@@ -220,5 +230,5 @@ float getTheta()
             return (dist_right-dist_left)/(float)(dist_left+dist_right)*2;
         }
     }
-    return (count_right-count_left)*DIAMETER*3.1415*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED;
+    return (count_right+count_left)*DIAMETER*3.1415*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED;
 }

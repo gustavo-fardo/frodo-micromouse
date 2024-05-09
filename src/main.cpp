@@ -20,8 +20,8 @@ void setup() {
   updateLEDs();
 }
 
-
 void loop() {
+
   readTOF();
   baseState();
   setLED(LED_FRONT,wall_front);

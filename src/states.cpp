@@ -50,7 +50,7 @@ void beginState()
 
     } else if(buttons == 0b11)
     {
-        setLED(LED_ALL,LOW);
+        setLED(LED_DIR,LOW);
         updateLEDs();
 
         //cria animação
@@ -81,6 +81,7 @@ void beginState()
         }
         activatePID(true);
         setInstruction(CODES::NONE,MODES::EMPTY);
+        walkAlgorithm();
         baseState = walkState;
     }
 

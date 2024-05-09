@@ -26,13 +26,14 @@ toda vez que realizar uma ação:
 #define PWM_MAX 255
 
 //para pid dos motores
-#define Kp 16
-#define Kd 0.03
-#define Ki 400
+#define Kp 6
+#define Kd 0.001
+#define Ki 4
 
 //para pid de controle de drift angular
-#define Kp_theta 1.0f
-#define Kd_theta 1.0f
+#define Kp_theta 8.0f
+#define Kd_theta 0.0f
+#define Ki_theta 4.0
 
 //para pid de controle de drift ao rotacionar
 #define Kp_x 1.0f
