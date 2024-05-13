@@ -1,3 +1,5 @@
+
+#include <maze.h>
 #include <Arduino.h>
 #include <leds.h>
 #include <tof.h>
@@ -6,6 +8,7 @@
 #include <PID.h>
 #include <pins.h>
 #include <states.h>
+
 
 //TODO funções para lidar com o mapa e paredes do labirinto (não aqui é claro)
 
@@ -18,6 +21,7 @@ void setup() {
   activatePID(false);
   setLED(MO1|MB1,HIGH);
   updateLEDs();
+  resetMaze();
 }
 
 void loop() {
