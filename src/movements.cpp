@@ -19,6 +19,7 @@ void setInstruction(CODES code ,MODES mode)
 }
 
 bool movement();
+bool rotation();
 
 bool instructMovement()
 {
@@ -30,7 +31,7 @@ bool instructMovement()
     case MOVEMENT:
         return movement();
     case INPLACE_ROTATION:
-        return false;
+        return rotation();
     case RADIUS_ROTATION:
         return false;
     }
@@ -45,7 +46,7 @@ bool movement()
     case 0:
         setPID(PID_STRAIGHT|PID_AUTO_STOP_X);
         resetIntegrals();
-        setXTheta(1000,0);
+        setXTheta(200,0);
         
         if(cur_instr.instr_mode != FORWARDS)
             spd = -spd;
@@ -54,14 +55,46 @@ bool movement()
         break;
     
     case 1:
-        if(cur_instr.instr_mode == FORWARDS && wall_front)
+        /*if(cur_instr.instr_mode == FORWARDS && wall_front)
         {
             if(dist_front_left+dist_front_right < 30.0*2)
             {
                 setVW(0,0);
                 return true;
             }
-        } else
+        }*/
+        return moveEnded();
+        break;
+    default:
+        return true;
+    }
+    return false;
+}
+
+
+bool rotation()
+{
+    float spd = 4;
+    switch (state)
+    {
+    case 0:
+        setPID(PID_AUTO_STOP_THETA|PID_INPLACE);
+        resetIntegrals();
+        if(cur_instr.instr_mode== UTURN)
+            setXTheta(0,3.1416);
+        else if(cur_instr.instr_mode== LEFT)
+            //setXTheta(0,1.4318);
+            setXTheta(0,3.1416/2);
+        else
+            setXTheta(0,3.1416/2);
+        
+        if(cur_instr.instr_mode != LEFT)
+            spd = -spd;
+        setVW(0,spd);
+        state = 1;
+        break;
+    
+    case 1:
             return moveEnded();
         break;
     default:

@@ -2,6 +2,7 @@
 
 bool bfsSearch()
 {
-    //TODO bfs
+    setInstruction(CODES::INPLACE_ROTATION,MODES::LEFT);
+    delay(1000);
     return false;
 }

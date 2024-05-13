@@ -36,8 +36,9 @@ toda vez que realizar uma ação:
 #define Ki_theta 4.0
 
 //para pid de controle de drift ao rotacionar
-#define Kp_x 1.0f
-#define Kd_x 1.0f
+#define Kp_x 10.0f
+#define Kd_x 0.5f
+#define Ki_x 30.0f
 
 //Bits de configuração para a função setPID(controls)
 #define PID_STRAIGHT 0b01

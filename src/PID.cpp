@@ -119,6 +119,7 @@ void PID()
 
     //sets PD for drifts (not included I term, may add later )
     float modtheta = 0;
+    float modx = 0;
     if(pid_control & PID_STRAIGHT)
     {
         
@@ -126,12 +127,18 @@ void PID()
         integral_theta += ethethan*0.01;
         modtheta = ethethan*Kp_theta+(ethethan-etheta)*Kd_theta*100+Ki_theta*integral_theta*0.01;
         etheta = ethethan;
+    }else if (pid_control & PID_INPLACE)
+    {
+        float exn = - getX();
+        integral_theta += 0.01*exn;
+        modx += exn*Kp_x + (exn-ex)*Kd_x*100+ integral_theta*0.01*Ki_x;
+        ex = exn;
     }
     //does pid of each motor
     float mod1,mod2;
     //calcula erros atuais
-    float e1n=-ideal_v+ideal_w-getV1()+modtheta;
-    float e2n=ideal_v+ideal_w-getV2()+modtheta;
+    float e1n=-ideal_v+ideal_w-getV1()+modtheta-modx;
+    float e2n=ideal_v+ideal_w-getV2()+modtheta+modx;
     integral1 += e1n*0.01;
     integral2 += e2n*0.01;
     
@@ -143,12 +150,7 @@ void PID()
     e2 = e2n;
 
 
-    if (pid_control & PID_INPLACE)
-    {
-        float exn = - getX();
-        mod1 += exn*Kp_x + (exn-ex)*Kd_x*100;
-        ex = exn;
-    }
+
 
     //gives instructions to motors
     if(ideal_v-ideal_w == 0.0)
@@ -230,5 +232,5 @@ float getTheta()
             return (dist_right-dist_left)/(float)(dist_left+dist_right)*2;
         }
     }
-    return (count_right+count_left)*DIAMETER*3.1415*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED;
+    return (count_right*1.01+count_left)*DIAMETER*3.1416*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED;
 }
