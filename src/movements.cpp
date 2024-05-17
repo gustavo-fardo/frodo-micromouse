@@ -40,13 +40,25 @@ bool instructMovement()
 
 bool movement()
 {
+    //pare movimento se uma parede estiver a menos de 1.5 cm dos sensores frontais
+    if(cur_instr.instr_mode == FORWARDS && wall_front)
+    {
+            if(dist_front_left+dist_front_right < 15.0*2)
+            {
+                setVW(0,0);
+                resetIntegrals();
+                setPID(PID_DEFAULT);
+                return true;
+            }
+    }
+
     float spd = 300.0;
     switch (state)
     {
     case 0:
         setPID(PID_STRAIGHT|PID_AUTO_STOP_X);
         resetIntegrals();
-        setXTheta(200,0);
+        setXTheta(143,0);
         
         if(cur_instr.instr_mode != FORWARDS)
             spd = -spd;
@@ -55,6 +67,8 @@ bool movement()
         break;
     
     case 1:
+        if(moveEnded)
+            
         /*if(cur_instr.instr_mode == FORWARDS && wall_front)
         {
             if(dist_front_left+dist_front_right < 30.0*2)
