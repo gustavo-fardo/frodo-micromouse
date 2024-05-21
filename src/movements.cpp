@@ -20,6 +20,7 @@ void setInstruction(CODES code ,MODES mode)
 
 bool movement();
 bool rotation();
+bool begin_setup();
 
 bool instructMovement()
 {
@@ -34,6 +35,42 @@ bool instructMovement()
         return rotation();
     case RADIUS_ROTATION:
         return false;
+    case BEGIN_SETUP:
+        return begin_setup();
+    }
+    return false;
+}
+
+
+bool begin_setup()
+{
+    switch (state)
+    {
+    case 0:
+        setPID(PID_STRAIGHT);
+        resetIntegrals();
+        resetCounts();
+        resetFinished();
+        setVW(-150,0);
+        delay(2000);
+        setPID(PID_STRAIGHT|PID_AUTO_STOP_X);
+        resetIntegrals();
+        setXTheta(45,0);
+        setVW(150,0);
+        state = 1;
+        return false;
+        break;
+    case 1:
+        if( moveEnded())
+        {
+            resetIntegrals();
+            resetCounts();
+            resetFinished();
+        }
+        break;
+    
+    default:
+        break;
     }
     return false;
 }
@@ -43,7 +80,7 @@ bool movement()
     //pare movimento se uma parede estiver a menos de 1.5 cm dos sensores frontais
     if(cur_instr.instr_mode == FORWARDS && wall_front)
     {
-            if(dist_front_left+dist_front_right < 15.0*2)
+            if(dist_front_left+dist_front_right < 30.0*2)
             {
                 setVW(0,0);
                 resetIntegrals();
@@ -57,7 +94,7 @@ bool movement()
     {
     case 0:
         setPID(PID_STRAIGHT|PID_AUTO_STOP_X);
-        resetIntegrals();
+        normalizeCounts();
         setXTheta(143,0);
         
         if(cur_instr.instr_mode != FORWARDS)
@@ -67,16 +104,7 @@ bool movement()
         break;
     
     case 1:
-        if(moveEnded)
-            
-        /*if(cur_instr.instr_mode == FORWARDS && wall_front)
-        {
-            if(dist_front_left+dist_front_right < 30.0*2)
-            {
-                setVW(0,0);
-                return true;
-            }
-        }*/
+
         return moveEnded();
         break;
     default:
@@ -94,6 +122,8 @@ bool rotation()
     case 0:
         setPID(PID_AUTO_STOP_THETA|PID_INPLACE);
         resetIntegrals();
+        resetFinished();
+        resetCounts();
         if(cur_instr.instr_mode== UTURN)
             setXTheta(0,3.1416);
         else if(cur_instr.instr_mode== LEFT)
@@ -109,7 +139,16 @@ bool rotation()
         break;
     
     case 1:
-            return moveEnded();
+            if(moveEnded())
+            {
+                resetIntegrals();
+                resetFinished();
+                resetCounts();
+                return true;
+            } else
+            {
+                return false;
+            }
         break;
     default:
         return true;

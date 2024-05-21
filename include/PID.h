@@ -48,6 +48,9 @@ toda vez que realizar uma ação:
 #define PID_AUTO_STOP_X 0b10000
 #define PID_AUTO_STOP_THETA 0b1000
 
+
+//constante de regulação do count direito
+#define REGULATOR_RIGHT 1.01
 /* @name setVW
 * @brief Configura qual velocidade, linear e angular, que o micromouse deve seguir.
 * @param v velocidade linear almejada em mm/s
@@ -72,14 +75,43 @@ void setVW(float v, float w);
 void setXTheta(float x, float theta);
 
 /* @name resetIntegrals
-* @brief Reseta diversas variáveis utilizadas para manter track do movimento do micromouse, como as integrais do PID, os counts dos encoders, os erros dos sensors e a flag de fim de movimento.
+* @brief Reseta as integrais do PID
 * @return void
 * @attention Deve ser utilizado ao fim de um movimento ou inicio de um novo, para que os erros acumulados de um movimento anterior não interfiram no novo, que está iniciando e não possui ligações com este.
 * 
 * @date alterações:
 *   - 30/04/2024: criado comentário, começado a documentar. - @walger-lucas
+*   - 21/05/2024: separado em reset Integral, finished e Counts. - @walger-lucas
 */
 void resetIntegrals();
+/* @name resetFinished
+* @brief Reseta a flag de fim de movimento.
+* @return void
+* @attention Deve ser utilizado ao fim de um movimento ou inicio de um novo, para que os erros acumulados de um movimento anterior não interfiram no novo, que está iniciando e não possui ligações com este.
+* 
+* @date alterações:
+*   - 21/05/2024: criado comentário, começado a documentar. - @walger-lucas
+*/
+void resetFinished();
+/* @name resetCounts
+* @brief Reseta os counts dos encoders.
+* @return void
+* @attention Deve ser utilizado ao fim de um movimento ou inicio de um novo, para que os erros acumulados de um movimento anterior não interfiram no novo, que está iniciando e não possui ligações com este.
+* 
+* @date alterações:
+*   - 21/05/2024: criado comentário, começado a documentar. - @walger-lucas
+*/
+void resetCounts();
+
+/* @name normalizeCounts
+* @brief reseta os counts, mas deixa a  mesma rotação encontrada anteriormente
+* @return void
+* @attention Deve ser utilizado ao fim de um movimento ou inicio de um novo, para que os erros acumulados de um movimento anterior não interfiram no novo, que está iniciando e não possui ligações com este.
+* 
+* @date alterações:
+*   - 21/05/2024: criado comentário, começado a documentar. - @walger-lucas
+*/
+void normalizeCounts();
 
 /* @name setupPID
 * @brief Faz setup dos pinos dos motores, encoders e da interrupção de timer do PID (que utiliza o timer1 e periodo de 10ms).

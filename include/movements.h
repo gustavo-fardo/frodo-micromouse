@@ -9,6 +9,7 @@
 typedef enum CODES
 {
     NONE, //wait for new instruction
+    BEGIN_SETUP, //use when starting run, will crash into back wall and then position itself correctly on the first square.
     MOVEMENT, //go forwards or Backwards
     INPLACE_ROTATION, //rotate 90° to either side or 180° by either side (inplace)
     RADIUS_ROTATION, // rotate 90° in a curve with the radius equal to the cell

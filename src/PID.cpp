@@ -123,7 +123,7 @@ void PID()
     if(pid_control & PID_STRAIGHT)
     {
         
-        float ethethan = -(count_left+count_right*1.01);
+        float ethethan = -(count_left+count_right*REGULATOR_RIGHT);
         integral_theta += ethethan*0.01;
         modtheta = ethethan*Kp_theta+(ethethan-etheta)*Kd_theta*100+Ki_theta*integral_theta*0.01;
         etheta = ethethan;
@@ -169,9 +169,30 @@ void resetIntegrals()
     integral1 = 0;
     integral2 = 0;
     integral_theta =0;
+
+}
+
+void resetFinished()
+{
+    finished=0;
+}
+
+void resetCounts()
+{
     count_left = 0;
     count_right = 0;
-    finished=0;
+}
+void normalizeCounts()
+{
+    int theta = count_left+count_right;
+    if(pid_control && PID_USE_TOF)
+    {
+        if(wall_front || wall_right || wall_left)
+            theta = getTheta()*(1.0/(DIAMETER*3.1416*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED));
+    }
+    
+    count_left = 0;
+    count_right = 0;
 }
 
 void setupPID()
@@ -214,7 +235,7 @@ ISR(TIMER1_COMPA_vect)
 float getX()
 {
     //x = (v1+v2)/2 = (c1+c2)*Diametro_rodas*pi/(counts_por_rotação*2)
-    return (-count_left+count_right*1.01)*0.5f*DIAMETER*INVERSE_COUNTS_PER_ROT*3.1415;
+    return (-count_left+count_right*REGULATOR_RIGHT)*0.5f*DIAMETER*INVERSE_COUNTS_PER_ROT*3.1415;
 }
 
 float getTheta()
@@ -232,5 +253,5 @@ float getTheta()
             return (dist_right-dist_left)/(float)(dist_left+dist_right)*2;
         }
     }
-    return (count_right*1.01+count_left)*DIAMETER*3.1416*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED;
+    return (count_right*REGULATOR_RIGHT+count_left)*DIAMETER*3.1416*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED;
 }
