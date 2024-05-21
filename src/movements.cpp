@@ -2,6 +2,8 @@
 #include <Arduino.h>
 #include<PID.h>
 #include <tof.h>
+#include <maze.h>
+#include <position_mutator.h>
 typedef struct Instruction
 {
     //stores the code for the instructions of movement
@@ -51,7 +53,7 @@ bool begin_setup()
         resetIntegrals();
         resetCounts();
         resetFinished();
-        setVW(-150,0);
+        setVW(-80,0);
         delay(2000);
         setPID(PID_STRAIGHT|PID_AUTO_STOP_X);
         resetIntegrals();
@@ -95,7 +97,9 @@ bool movement()
     case 0:
         setPID(PID_STRAIGHT|PID_AUTO_STOP_X);
         normalizeCounts();
-        setXTheta(143,0);
+        setXTheta(37,0);
+        //set front
+
         
         if(cur_instr.instr_mode != FORWARDS)
             spd = -spd;
@@ -104,8 +108,20 @@ bool movement()
         break;
     
     case 1:
-
+        if(moveEnded())
+        {
+            seeWalls(wall_front,wall_left,wall_right,mm::getDir(),mm::getX(),mm::getY());
+            mm::setX(getFrontX(mm::getDir(),mm::getX()));
+            mm::setY(getFrontY(mm::getDir(),mm::getY()));
+            setXTheta(180,0);
+            resetFinished();
+            state = 2;
+            return false;
+        }
+    case 2:
         return moveEnded();
+
+        
         break;
     default:
         return true;
@@ -144,6 +160,20 @@ bool rotation()
                 resetIntegrals();
                 resetFinished();
                 resetCounts();
+                switch (cur_instr.instr_mode)
+                {
+                case LEFT:
+                    mm::setDir(sumDirection(mm::getDir(),L));
+                    break;
+                
+                case RIGHT:
+                    mm::setDir(sumDirection(mm::getDir(),R));
+                    break;
+                case UTURN:
+                    mm::setDir(sumDirection(mm::getDir(),D));
+                    break;
+                }
+                
                 return true;
             } else
             {
