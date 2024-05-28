@@ -105,31 +105,59 @@ bool moveEnded()
 */
 void PID()
 {
-    //sees if moves have ended when on auto stop
-    if(pid_control & PID_AUTO_STOP_THETA && abs(ideal_theta) < abs(getTheta()))
-    {
-        ideal_w=0;
-        finished |= 0b01; // seta fim do movimento angular
-    }
-    if(pid_control & PID_AUTO_STOP_X && abs(ideal_x) < abs(getX()))
-    {
-        ideal_v = 0;
-        finished |= 0b10; // seta fim do movimento linear
-    }
-
     //sets PD for drifts (not included I term, may add later )
     float modtheta = 0;
     float modx = 0;
     if(pid_control & PID_STRAIGHT)
     {
-        
-        float ethethan = -(count_left+count_right*REGULATOR_RIGHT);
-        integral_theta += ethethan*0.01;
-        modtheta = ethethan*Kp_theta+(ethethan-etheta)*Kd_theta*100+Ki_theta*integral_theta*0.01;
+        static uint8_t last_wall = 0;
+        static uint16_t wall_count = 0;
+        float ethethan;
+        uint8_t cur_walls;
+        if(pid_control & PID_USE_TOF_FRONT)
+             cur_walls = (wall_front ? 0x1 : 0x0);
+        else
+            cur_walls = (wall_left ? 0x2 : 0x0) |  (wall_right ? 0x4 : 0x0);
+        if(cur_walls== last_wall
+        && wall_count<1000)
+        {
+            wall_count++;
+        } else
+        {
+            wall_count = 0;
+            count_left = -(-count_left+count_right)/2;
+            count_right = REGULATOR_RIGHT*(-count_left+count_right)/2;
+        }
+        last_wall = cur_walls;
+        if((pid_control & PID_USE_TOF_FRONT) && wall_front && wall_count >=10)
+        {
+            ethethan = -dist_front_left+dist_front_right;
+            integral_theta += ethethan*0.01;
+            modtheta = ethethan*Kp_theta_front+(ethethan-etheta)*Kd_theta_front*100+Ki_theta_front*integral_theta*0.01;
+        } else if((pid_control & PID_USE_TOF_SIDES) && (wall_left ||wall_right) && wall_count >=10)
+        {
+            float right=dist_right*1.53, left= dist_left;
+            if(!wall_right)
+                right = DISTANCE_TOF_NO_WALL;
+            else if (!wall_left)
+                left =DISTANCE_TOF_NO_WALL;
+
+            ethethan = left-right;
+            integral_theta += ethethan*0.01;
+            modtheta = ethethan*Kp_theta_sides+(ethethan-etheta)*Kd_theta_sides*100+Ki_theta_sides*integral_theta*0.01;
+        } else
+        {
+
+            ethethan = -(count_left+count_right*REGULATOR_RIGHT);
+            integral_theta += ethethan*0.01;
+            modtheta = ethethan*Kp_theta+(ethethan-etheta)*Kd_theta*100+Ki_theta*integral_theta*0.01;
+            
+        }
         etheta = ethethan;
+
     }else if (pid_control & PID_INPLACE)
     {
-        float exn = - getX();
+        float exn = - getMovementX();
         integral_theta += 0.01*exn;
         modx += exn*Kp_x + (exn-ex)*Kd_x*100+ integral_theta*0.01*Ki_x;
         ex = exn;
@@ -153,14 +181,26 @@ void PID()
 
 
     //gives instructions to motors
-    if(ideal_v-ideal_w == 0.0)
+    if(abs(-ideal_v+ideal_w+modtheta) < 20.0)
         motor(MOTOR_ESQ_PLUS,MOTOR_ESQ_MINUS,0);
     else
         motor(MOTOR_ESQ_PLUS,MOTOR_ESQ_MINUS,mod1);
-   if(ideal_v+ideal_w  == 0.0)
+   if(abs(ideal_v+ideal_w+modtheta)  < 20.0)
         motor(MOTOR_DIR_PLUS,MOTOR_DIR_MINUS,0);
     else
         motor(MOTOR_DIR_PLUS,MOTOR_DIR_MINUS,mod2);
+
+        //sees if moves have ended when on auto stop
+    if(pid_control & PID_AUTO_STOP_THETA && abs(ideal_theta) < abs(getTheta()))
+    {
+        ideal_w=0;
+        finished |= 0b01; // seta fim do movimento angular
+    }
+    if(pid_control & PID_AUTO_STOP_X && abs(ideal_x) < abs(getMovementX()))
+    {
+        ideal_v = 0;
+        finished |= 0b10; // seta fim do movimento linear
+    }
     
 }
 
@@ -185,14 +225,14 @@ void resetCounts()
 void normalizeCounts()
 {
     int theta = count_left+count_right;
-    if(pid_control && PID_USE_TOF)
+    if(pid_control & (PID_USE_TOF_FRONT | PID_USE_TOF_SIDES))
     {
-        if(wall_front || wall_right || wall_left)
-            theta = getTheta()*(1.0/(DIAMETER*3.1416*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED));
+        resetCounts();
+        return;
     }
     
-    count_left = 0;
-    count_right = 0;
+    count_left = theta/2;
+    count_right = theta/2;
 }
 
 void setupPID()
@@ -232,7 +272,7 @@ ISR(TIMER1_COMPA_vect)
     }
 }
 
-float getX()
+float getMovementX()
 {
     //x = (v1+v2)/2 = (c1+c2)*Diametro_rodas*pi/(counts_por_rotação*2)
     return (-count_left+count_right*REGULATOR_RIGHT)*0.5f*DIAMETER*INVERSE_COUNTS_PER_ROT*3.1415;
@@ -242,16 +282,20 @@ float getTheta()
 {
     //se com pid utiliza a diferença entre os sensores, priorizando utilizar os sensores frontais caso possível
     // theta = (v2-v1)/Distancia_Rodas = (c2-c1)*Diametro_Rodas*pi/(counts_por_rotação*Distancia_Rodas)
-    if(pid_control & PID_USE_TOF)
+
+    if((pid_control & PID_USE_TOF_FRONT) && wall_front)
     {
-        if(wall_front && !(wall_left && wall_right))
-        {
-            return (dist_front_right-dist_front_left)/(float)(dist_front_left+dist_front_right)*2;
-        } else
-        if(wall_left && wall_right)
-        {
-            return (dist_right-dist_left)/(float)(dist_left+dist_right)*2;
-        }
+        return (dist_front_right-dist_front_left*1.2)/(float)(dist_front_left+dist_front_right);
+    } else
+    if((pid_control & PID_USE_TOF_SIDES) && (wall_left || wall_right))
+    {
+        int16_t right=dist_right, left= dist_left;
+        if(!wall_right)
+            right = DISTANCE_TOF_NO_WALL;
+        else if (!wall_left)
+            left =DISTANCE_TOF_NO_WALL;
+        return (right-left)/(float)(left+right);
+
     }
     return (count_right*REGULATOR_RIGHT+count_left)*DIAMETER*3.1416*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED;
 }

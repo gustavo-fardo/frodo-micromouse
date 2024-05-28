@@ -11,7 +11,7 @@
 #define TOF_OFFSET 10
 
 //variáveis que retornam as saídas dos sensores em mm, respectivamente esquerda, direita, frente esquerda e frente direita
-extern int16_t dist_left, dist_right, dist_front_left, dist_front_right;
+extern float dist_left, dist_right, dist_front_left, dist_front_right;
 //bools que retornam caso foi percebido uma parede, respectivamente, a esquerda, a frente e a direita
 extern bool wall_left,wall_front,wall_right;
 

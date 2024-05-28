@@ -4,7 +4,8 @@
 #include <constants.h>
 #include <pins.h>
 
-int16_t dist_left=0, dist_right=0, dist_front_left=0, dist_front_right=0;
+float dist_left=0, dist_right=0, dist_front_left=0, dist_front_right=0;
+float ldist_left=0, ldist_right=0, ldist_front_left=0, ldist_front_right=0;
 bool wall_left=0,wall_front=0,wall_right=0;
 
 //estruturas que guardam valor de medição dos sensores
@@ -13,13 +14,20 @@ VL53L0X sensor_front_left;
 VL53L0X sensor_front_right;
 VL53L0X sensor_right;
 
-
+#define PERCENTAGE_AVG 0.8
 void readTOF()
 {
-    dist_left = sensor_left.readRangeContinuousMillimeters()- TOF_OFFSET;
-    dist_right = sensor_right.readRangeContinuousMillimeters()- TOF_OFFSET;
-    dist_front_left = sensor_front_left.readRangeContinuousMillimeters()- TOF_OFFSET;
-    dist_front_right = sensor_front_right.readRangeContinuousMillimeters()-TOF_OFFSET;
+    
+    ldist_left = ldist_left*(1-PERCENTAGE_AVG) + (float) sensor_left.readRangeContinuousMillimeters()*PERCENTAGE_AVG;
+    ldist_right = ldist_right*(1-PERCENTAGE_AVG) + (float) sensor_right.readRangeContinuousMillimeters()*PERCENTAGE_AVG;
+    ldist_front_left =ldist_front_left*(1-PERCENTAGE_AVG) + (float) sensor_front_left.readRangeContinuousMillimeters()*PERCENTAGE_AVG;
+    ldist_front_right = ldist_front_right*(1-PERCENTAGE_AVG) + (float) sensor_front_right.readRangeContinuousMillimeters()*PERCENTAGE_AVG;
+    dist_left = ldist_left;
+    dist_right = ldist_right;
+    dist_front_left = ldist_front_left;
+    dist_front_right = ldist_front_right;
+
+
 
     wall_front = (dist_front_left+dist_front_right <= FRONT_WALL_DIST*2) ? true : false;
     wall_left = (dist_left <= SIDE_WALL_DIST) ? true: false;
@@ -54,7 +62,7 @@ void setupTOF()
     sensor_front_right.init();
     
     //seta timeout para os sensores
-    sensor_left.setTimeout(500);
+    sensor_left.setTimeout(10000);
     sensor_right.setTimeout(500);
     sensor_front_left.setTimeout(500);
     sensor_front_right.setTimeout(500);

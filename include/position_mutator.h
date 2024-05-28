@@ -4,9 +4,6 @@
 #include<Arduino.h>
 #include<position.h>
 
-namespace mm
-{
-    void setX(uint8_t x);
-    void setY(uint8_t y);
-    void setDir(DIRECTIONS dir);
-}
+void setX(uint8_t x);
+void setY(uint8_t y);
+void setDir(DIRECTIONS dir);

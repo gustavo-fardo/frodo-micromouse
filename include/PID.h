@@ -33,7 +33,17 @@ toda vez que realizar uma ação:
 //para pid de controle de drift angular
 #define Kp_theta 8.0f
 #define Kd_theta 0.0f
-#define Ki_theta 4.0
+#define Ki_theta 4.0f
+
+#define Kp_theta_front 8.0f
+#define Kd_theta_front 0.0f
+#define Ki_theta_front 2.5f
+
+#define Kp_theta_sides 3.0f
+#define Kd_theta_sides 0.0f
+#define Ki_theta_sides 0.5f
+//constante para multiplicar o angulo thetha do getTheta para o PID
+#define K_TOF 0.1
 
 //para pid de controle de drift ao rotacionar
 #define Kp_x 10.0f
@@ -43,14 +53,15 @@ toda vez que realizar uma ação:
 //Bits de configuração para a função setPID(controls)
 #define PID_STRAIGHT 0b01
 #define PID_INPLACE 0b10
-#define PID_USE_TOF 0b100
+#define PID_USE_TOF_SIDES 0b100
+#define PID_USE_TOF_FRONT 0b100000
 #define PID_DEFAULT 0b00
 #define PID_AUTO_STOP_X 0b10000
 #define PID_AUTO_STOP_THETA 0b1000
 
 
 //constante de regulação do count direito
-#define REGULATOR_RIGHT 1.01
+#define REGULATOR_RIGHT 1.005
 /* @name setVW
 * @brief Configura qual velocidade, linear e angular, que o micromouse deve seguir.
 * @param v velocidade linear almejada em mm/s
@@ -142,13 +153,13 @@ void setupPID();
 */
 void setPID(uint8_t control);
 
-/* @name getX
+/* @name getMovementX
 * @brief Calcula a distância percorrida pela média dos counts dos motores desde o último resetIntegrals();
 * @return Distância aproximada percorrida pelo micromouse em mm desde o último resetIntegrals().
 * @date alterações:
 *   - 30/04/2024: criado comentário, começado a documentar. - @walger-lucas
 */
-float getX();
+float getMovementX();
 /* @name getTheta
 * @brief Calcula a rotação percorrida pela diferença dos counts dos motores desde o último resetIntegrals();
 * @return Rotação aproximada percorrida pelo micromouse em radianos desde o último resetIntegrals().

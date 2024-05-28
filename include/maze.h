@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 
-#define SIZE 7
+#define SIZE 4
 
 typedef enum DIRECTIONS
 {

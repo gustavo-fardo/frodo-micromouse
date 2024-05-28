@@ -4,9 +4,8 @@
 #include<Arduino.h>
 #include<maze.h>
 //mm micromouse
-namespace mm
-{
-    uint8_t getX();
-    uint8_t getY();
-    DIRECTIONS getDir();
-}
+
+uint8_t getX();
+uint8_t getY();
+DIRECTIONS getDir();
+bool wallAt(DIRECTIONS dir);

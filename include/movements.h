@@ -25,4 +25,5 @@ typedef enum MODES
 } MODES;
 
 void setInstruction(CODES code ,MODES mode);
+void setSecondInstruction(CODES code ,MODES mode);
 bool instructMovement();

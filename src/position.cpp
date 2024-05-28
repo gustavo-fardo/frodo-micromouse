@@ -26,3 +26,7 @@ DIRECTIONS getDir()
 {
     return dir;
 }
+bool wallAt(DIRECTIONS dir)
+{
+    return getWall(sumDirection(dir,getDir()),getX(),getY());
+}

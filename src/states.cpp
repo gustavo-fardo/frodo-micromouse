@@ -2,7 +2,7 @@
 #include<buttons.h>
 #include<PID.h>
 #include<leds.h>
-
+#include <position_mutator.h>
 void beginState();
 void walkState();
 
@@ -81,6 +81,9 @@ void beginState()
         }
         activatePID(true);
         setInstruction(CODES::NONE,MODES::EMPTY);
+        setDir(U);
+        setX(0);
+        setY(0);
         walkAlgorithm();
         baseState = walkState;
     }
