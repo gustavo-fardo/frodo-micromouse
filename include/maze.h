@@ -55,7 +55,7 @@ void exploreCell(uint8_t x, uint8_t y);
 * @param y coordenada y da célula
 * @value 2 bytes de informação correspondentes a célula escolhida
 */
-void setCell(uint8_t x, uint8_t y, uint16_t value);
+void setCell(uint8_t x, uint8_t y, uint8_t value);
 
 /*
 * @name getCell
@@ -63,7 +63,7 @@ void setCell(uint8_t x, uint8_t y, uint16_t value);
 * @param x coordenada x da célula
 * @param y coordenada y da célula
 */
-uint16_t getCell(uint8_t x, uint8_t y);
+uint8_t getCell(uint8_t x, uint8_t y);
 
 /*
 * @name getFrontX
@@ -109,3 +109,15 @@ DIRECTIONS sumDirection(DIRECTIONS direction1,DIRECTIONS direction2);
 * @brief Reseta buffers e explora a célula 0,0, adicionando uma parede obrigatória a direita.
 */
 void resetMaze();
+
+/*
+* @name validAdjacentCell
+* @brief retorna se a célula adjacente é válida a ser explorada, e sua entrada na matriz de custos,
+* @brief ser valido a ser explorado significa que não há uma parede entre o local atual e a direção desejada, ou que não tenha sido explorado caso validUnexplored = false
+* @param data ponteiro para onde os dados da célula devem ser guardados.
+* @param x coordenada x
+* @param y coordenada y
+* @param dir direção
+* @param validUnexplored flag que caso setada considera que células não exploradas são validas.
+*/
+bool validAdjacentCell(uint8_t* data,uint8_t x, uint8_t y, DIRECTIONS dir, bool validUnexplored = true);

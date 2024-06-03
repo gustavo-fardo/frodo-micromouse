@@ -139,10 +139,13 @@ bool movement()
         {
             
             seeWalls(wall_front,wall_left,wall_right,getDir(),getX(),getY());
-            setXTheta(185,0);
+            setXTheta(180,0);
             setVW(spd,0);
             resetFinished();
-            setPID(PID_STRAIGHT|PID_AUTO_STOP_X |PID_USE_TOF_SIDES);
+            if(wallAt(U))
+                setPID(PID_STRAIGHT|PID_AUTO_STOP_X |PID_USE_TOF_FRONT);
+            else
+                setPID(PID_STRAIGHT|PID_AUTO_STOP_X |PID_USE_TOF_SIDES);
             
             state = 2;
         }

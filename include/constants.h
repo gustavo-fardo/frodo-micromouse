@@ -6,7 +6,7 @@
 
 //Diameter Wheels
 #define DIAMETER 60.0 //(mm)
-#define DISTANCE_WHEELS 116.0 //(mm)
+#define DISTANCE_WHEELS 110.0 //(mm)
 
 
 //distance in milimeters of wall sides when one side of the walls isnt visible, virtual wall

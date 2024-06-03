@@ -5,7 +5,7 @@
 #define CELL_COUNT SIZE*SIZE
 uint8_t exploredCells[CELL_BYTES] = {0};
 uint8_t wall[WALL_BYTES]= {0};
-uint16_t cells[SIZE][SIZE] ={0};
+uint8_t cells[SIZE][SIZE] ={0};
 
 void resetMaze()
 {
@@ -117,11 +117,11 @@ void setWall(DIRECTIONS direction, uint8_t x, uint8_t y)
     wall[byte] |= 0b1<<bit;
 }
 
-void setCell(uint8_t x, uint8_t y, uint16_t value)
+void setCell(uint8_t x, uint8_t y, uint8_t value)
 {
     cells[x][y]= value;
 }
-uint16_t getCell(uint8_t x, uint8_t y)
+uint8_t getCell(uint8_t x, uint8_t y)
 {
     return cells[x][y];
 }
@@ -172,4 +172,17 @@ uint8_t getFrontY(DIRECTIONS direction, uint8_t y)
         return y;
         break;
     }
+}
+
+bool validAdjacentCell(uint8_t* data,uint8_t x, uint8_t y, DIRECTIONS dir, bool validUnexplored)
+{
+    if(getWall(dir,x,y))
+        return false;
+    uint8_t xf = getFrontX(dir,x);
+    uint8_t yf = getFrontY(dir,y);
+    if(!(cellExplored(xf,yf) || validUnexplored))
+        return false;
+    if(data != nullptr)
+        *data = getCell(xf,yf);
+    return true;
 }
