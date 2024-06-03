@@ -24,7 +24,6 @@ DIRECTIONS getDir();
 */
 bool wallAt(DIRECTIONS dir);
 
-
 /*
 * @name validAdjacentCellLocal
 * @brief retorna se a célula adjacente é válida a ser explorada, e sua entrada na matriz de custos,
@@ -34,4 +33,4 @@ bool wallAt(DIRECTIONS dir);
 * @param dir direção local ao micromouse
 * @param validUnexplored flag que caso setada considera que células não exploradas são validas.
 */
-bool validAdjacentCellLocal(uint8_t* data, DIRECTIONS dir, bool validUnexplored = true);
+bool validAdjacentCellLocal(uint8_t* data, DIRECTIONS dir, bool validUnexplored= true);

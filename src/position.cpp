@@ -31,7 +31,7 @@ bool wallAt(DIRECTIONS dir)
     return getWall(sumDirection(dir,getDir()),getX(),getY());
 }
 
-bool validAdjacentCellLocal(uint8_t* data, DIRECTIONS dir, bool validUnexplored = true)
+bool validAdjacentCellLocal(uint8_t* data, DIRECTIONS dir, bool validUnexplored)
 {
     return validAdjacentCell(data,getX(),getY(),sumDirection(getDir(),dir),validUnexplored);
 }
