@@ -10,8 +10,6 @@
 #include <states.h>
 #include <position.h>
 
-//TODO funções para lidar com o mapa e paredes do labirinto (não aqui é claro)
-
 
 void setup() {
   setupTOF();
