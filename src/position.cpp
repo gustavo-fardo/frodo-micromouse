@@ -72,5 +72,5 @@ uint8_t getYFromCoord(uint8_t coord)
 
 uint8_t createCoord(uint8_t x, uint8_t y)
 {
-    return x &0xF | y <<4;
+    return (x & 0xF) | (y << 4);
 }
