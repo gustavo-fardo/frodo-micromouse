@@ -60,3 +60,17 @@ void goTo(DIRECTIONS dir)
     }
 
 }
+
+uint8_t getXFromCoord(uint8_t coord)
+{
+    return coord & 0xF;
+}
+uint8_t getYFromCoord(uint8_t coord)
+{
+    return coord>>4;
+}
+
+uint8_t createCoord(uint8_t x, uint8_t y)
+{
+    return x &0xF | y <<4;
+}

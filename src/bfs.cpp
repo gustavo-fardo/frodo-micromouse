@@ -1,8 +1,8 @@
 #include <states.h>
-
+#include <position.h>
 bool bfsSearch()
 {
-    setInstruction(CODES::INPLACE_ROTATION,MODES::LEFT);
+    goTo(L);
     
     return false;
 }
