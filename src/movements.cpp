@@ -225,25 +225,27 @@ bool rotation()
             
             if(moveEnded())
             {
-                resetIntegrals();
-                resetFinished();
-                resetCounts();
-                setVW(0,0);
+                if(cur_instr.instr_mode != UTURN)
+                {
+                    resetIntegrals();
+                    resetFinished();
+                    resetCounts();
+                    setVW(0,0);
+                } else
+                {
+                    state = 0;
+                    cur_instr.instr_mode = LEFT;
+                    return false;
+                }
                 return true;
             }
         break;
     case 4:
         setPID(PID_AUTO_STOP_THETA|PID_INPLACE);
 
-        if(cur_instr.instr_mode== UTURN)
-            setXTheta(0,3.1416);
-        else if(cur_instr.instr_mode== LEFT)
-            //setXTheta(0,1.4318);
-            setXTheta(0,3.1416/2);
-        else
-            setXTheta(0,3.1416/2);
+        setXTheta(0,3.1416/2);
         
-        if(cur_instr.instr_mode != LEFT)
+        if(cur_instr.instr_mode == RIGHT)
             spd = -spd;
         setVW(0,spd);
         state = 1;

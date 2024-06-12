@@ -1,4 +1,5 @@
 #include<position_mutator.h>
+#include<movements.h>
 uint8_t x=0, y=0;
 DIRECTIONS dir=U;
 void setX(uint8_t _x)
@@ -33,5 +34,29 @@ bool wallAt(DIRECTIONS dir)
 
 bool validAdjacentCellLocal(uint8_t* data, DIRECTIONS dir, bool validUnexplored)
 {
-    return validAdjacentCell(data,getX(),getY(),sumDirection(getDir(),dir),validUnexplored);
+    return validAdjacentCell(data,getX(),getY(),dir,validUnexplored);
+}
+
+void goTo(DIRECTIONS dir)
+{
+    DIRECTIONS go = sumDirection(getDir(),dir);
+    switch (go)
+    {
+    case U:
+        setInstruction(MOVEMENT,FORWARDS);
+        break;
+    case L:
+        setInstruction(INPLACE_ROTATION,LEFT);
+        setSecondInstruction(MOVEMENT,FORWARDS);
+        break;
+    case R:
+        setInstruction(INPLACE_ROTATION,RIGHT);
+        setSecondInstruction(MOVEMENT,FORWARDS);
+        break;
+    case D:
+        setInstruction(INPLACE_ROTATION,UTURN);
+        setSecondInstruction(MOVEMENT,FORWARDS);
+        break;
+    }
+
 }

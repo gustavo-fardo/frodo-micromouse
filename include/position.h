@@ -34,3 +34,11 @@ bool wallAt(DIRECTIONS dir);
 * @param validUnexplored flag que caso setada considera que células não exploradas são validas.
 */
 bool validAdjacentCellLocal(uint8_t* data, DIRECTIONS dir, bool validUnexplored= true);
+
+
+/*
+* @name goTo
+* @brief seta instrucoes para ir para a direção dada, em uma coordenada global, ou seja up sempre será y+1, etc.
+* @param dir Direção global a ir
+*/
+void goTo(DIRECTIONS dir);
