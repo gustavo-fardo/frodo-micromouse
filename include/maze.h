@@ -120,4 +120,17 @@ void resetMaze();
 * @param dir direção
 * @param validUnexplored flag que caso setada considera que células não exploradas são validas.
 */
-bool validAdjacentCell(uint8_t* data,uint8_t x, uint8_t y, DIRECTIONS dir, bool validUnexplored = true);
+bool validAdjacentCell(uint8_t* data, uint8_t x, uint8_t y, DIRECTIONS dir, bool validUnexplored = true);
+
+/*
+Classe de coordenadas, para armazenar X e Y em 8 bits
+Pode retornar coordenada X ou Y
+*/
+class coordenates{
+    private:
+        uint8_t coordenate;
+    public:
+        coordenates(uint8_t X, uint8_t Y):coordenate((X << 4 )+ Y);
+        uint8_t getCoordenateX(){ return (coordenate >> 4);};
+        uint8_t getCoordenateY(){ return (coordenate & 0xF);};
+}
