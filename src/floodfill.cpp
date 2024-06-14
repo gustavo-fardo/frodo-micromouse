@@ -72,12 +72,12 @@ void floodfill(uint8_t center, bool isValidUnexplored){
     // A partir das celulas de peso 1, preencher com +1
 }
 
-void followFloodFill()
+void followFloodFill(bool validUnexplored)
 {
     uint8_t value = 255, data;
     DIRECTIONS directions;
     for(uint8_t i = 0; i < 4; i++){
-        if(validAdjacentCellLocal(&data,(DIRECTIONS)i,true)){
+        if(validAdjacentCellLocal(&data,(DIRECTIONS)i,validUnexplored)){
             if (data < value){
                 directions = (DIRECTIONS)i;
                 value = data;

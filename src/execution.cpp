@@ -10,7 +10,7 @@ bool executionAlgorithm()
     {
     case 0:
         floodfill(createCoord(SIZE/2,SIZE/2),false);
-        followFloodFill();
+        followFloodFill(false);
         execution_state = 1;
         break;
     
@@ -29,7 +29,7 @@ bool executionAlgorithm()
             execution_state = 3;
         } else
         {
-            followFloodFill();
+            followFloodFill(false);
         }
     
         break;
