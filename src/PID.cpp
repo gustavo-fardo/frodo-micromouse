@@ -19,6 +19,7 @@ volatile uint8_t finished=0; // 0B1 WHEN ROTATION ENDED, 0B10 WHEN TRANSLATION E
 float ideal_v=0,ideal_w=0;// Expected values in mm/s and rad/s
 float ideal_x = 0, ideal_theta = 0; //Expected values in mm and rad, only valid to AUTO-STOP
 float integral_theta = 0;
+
 /* motor
 * @brief Função seta motor dado com o valor de pwm igual a mod, alterando direções. 
 * @addindex m_plus  pino M1 do motor
@@ -129,7 +130,7 @@ void PID()
             count_right = REGULATOR_RIGHT*(-count_left+count_right)/2;
         }
         last_wall = cur_walls;
-        if((pid_control & PID_USE_TOF_FRONT) && wall_front && wall_count >=10)
+        if((pid_control & PID_USE_TOF_FRONT) && wall_front && wall_count >=20)
         {
             ethethan = -dist_front_left+dist_front_right;
             integral_theta += ethethan*0.01;
@@ -275,7 +276,7 @@ ISR(TIMER1_COMPA_vect)
 float getMovementX()
 {
     //x = (v1+v2)/2 = (c1+c2)*Diametro_rodas*pi/(counts_por_rotação*2)
-    return (-count_left+count_right*REGULATOR_RIGHT)*0.5f*DIAMETER*INVERSE_COUNTS_PER_ROT*3.1415;
+    return (-count_left+count_right*REGULATOR_RIGHT)*0.5f*DIAMETER*INVERSE_COUNTS_PER_ROT*PI;
 }
 
 float getTheta()
@@ -297,5 +298,5 @@ float getTheta()
         return (right-left)/(float)(left+right);
 
     }
-    return (count_right*REGULATOR_RIGHT+count_left)*DIAMETER*3.1416*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED;
+    return (count_right*REGULATOR_RIGHT+count_left)*DIAMETER*PI*INVERSE_COUNTS_PER_ROT*DISTANCE_WHEELS_INVERSED;
 }

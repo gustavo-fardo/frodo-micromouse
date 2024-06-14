@@ -42,3 +42,8 @@ bool validAdjacentCellLocal(uint8_t* data, DIRECTIONS dir, bool validUnexplored=
 * @param dir Direção global a ir
 */
 void goTo(DIRECTIONS dir);
+
+uint8_t getXFromCoord(uint8_t coord);
+uint8_t getYFromCoord(uint8_t coord);
+
+uint8_t createCoord(uint8_t x, uint8_t y);

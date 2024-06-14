@@ -39,18 +39,21 @@ bool validAdjacentCellLocal(uint8_t* data, DIRECTIONS dir, bool validUnexplored)
 
 void goTo(DIRECTIONS dir)
 {
-    DIRECTIONS go = sumDirection(getDir(),dir);
+    DIRECTIONS go =(DIRECTIONS) ((4+(int8_t) dir - (int8_t) getDir())%4);
+
+
+
     switch (go)
     {
     case U:
         setInstruction(MOVEMENT,FORWARDS);
         break;
-    case L:
-        setInstruction(INPLACE_ROTATION,LEFT);
-        setSecondInstruction(MOVEMENT,FORWARDS);
-        break;
     case R:
         setInstruction(INPLACE_ROTATION,RIGHT);
+        setSecondInstruction(MOVEMENT,FORWARDS);
+        break;
+    case L:
+        setInstruction(INPLACE_ROTATION,LEFT);
         setSecondInstruction(MOVEMENT,FORWARDS);
         break;
     case D:
@@ -72,5 +75,5 @@ uint8_t getYFromCoord(uint8_t coord)
 
 uint8_t createCoord(uint8_t x, uint8_t y)
 {
-    return x &0xF | y <<4;
+    return (x & 0xF) |( y <<4);
 }

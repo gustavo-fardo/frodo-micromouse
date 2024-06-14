@@ -35,13 +35,13 @@ toda vez que realizar uma ação:
 #define Kd_theta 0.0f
 #define Ki_theta 4.0f
 
-#define Kp_theta_front 8.0f
-#define Kd_theta_front 0.0f
-#define Ki_theta_front 2.5f
+#define Kp_theta_front 4.0f
+#define Kd_theta_front 0.5f
+#define Ki_theta_front 1.5f
 
-#define Kp_theta_sides 3.0f
+#define Kp_theta_sides 1.4f
 #define Kd_theta_sides 0.0f
-#define Ki_theta_sides 0.5f
+#define Ki_theta_sides 0.6f
 //constante para multiplicar o angulo thetha do getTheta para o PID
 #define K_TOF 0.1
 

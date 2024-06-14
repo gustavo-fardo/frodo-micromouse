@@ -4,6 +4,7 @@
 #include <tof.h>
 #include <maze.h>
 #include <position_mutator.h>
+
 typedef struct Instruction
 {
     //stores the code for the instructions of movement
@@ -103,9 +104,9 @@ bool begin_setup()
 bool movement()
 {
     //pare movimento se uma parede estiver a menos de 1.5 cm dos sensores frontais
-    if(cur_instr.instr_mode == FORWARDS && wall_front && state !=0)
+    if(cur_instr.instr_mode == FORWARDS && wall_front && state != 0)
     {
-            if(dist_front_left+dist_front_right < 45.0*2)
+            if(dist_front_left+dist_front_right < 65.0*2)
             {
                 setVW(0,0);
                 resetIntegrals();
@@ -114,7 +115,7 @@ bool movement()
             }
     }
     
-    float spd = 300.0; 
+    float spd = 250.0; 
     switch (state)
     {
     case 0:
@@ -125,7 +126,7 @@ bool movement()
 
         setPID(PID_STRAIGHT|PID_AUTO_STOP_X|PID_USE_TOF_SIDES);
         
-        setXTheta(70,0);
+        setXTheta(95,0);
     
         if(cur_instr.instr_mode != FORWARDS)
             spd = -spd;
@@ -139,7 +140,7 @@ bool movement()
         {
             
             seeWalls(wall_front,wall_left,wall_right,getDir(),getX(),getY());
-            setXTheta(180,0);
+            setXTheta(175,0);
             setVW(spd,0);
             resetFinished();
             if(wallAt(U))
@@ -169,7 +170,7 @@ bool rotation()
         resetIntegrals();
         resetFinished();
         resetCounts();
-        if(dist_front_left+dist_front_right < 100.0*2)
+        if(dist_front_left+dist_front_right < 130.0*2)
         {
                 setPID(PID_STRAIGHT |PID_USE_TOF_FRONT);
                 setVW(200,0);
@@ -188,7 +189,7 @@ bool rotation()
                 resetCounts();
                 setPID(PID_STRAIGHT |PID_AUTO_STOP_X);
                 setVW(-200,0);
-                setXTheta(15,0);
+                setXTheta(9,0);
 
                 switch (cur_instr.instr_mode)
                 {
@@ -210,7 +211,7 @@ bool rotation()
             }
         break;
     case 2:
-        if(dist_front_left+dist_front_right < 45.0*2)
+        if(dist_front_left+dist_front_right < 65.0*2)
         {
                 
                 resetIntegrals();
@@ -225,25 +226,20 @@ bool rotation()
             
             if(moveEnded())
             {
-                if(cur_instr.instr_mode != UTURN)
-                {
                     resetIntegrals();
                     resetFinished();
                     resetCounts();
                     setVW(0,0);
-                } else
-                {
-                    state = 0;
-                    cur_instr.instr_mode = LEFT;
-                    return false;
-                }
+                
                 return true;
             }
         break;
     case 4:
         setPID(PID_AUTO_STOP_THETA|PID_INPLACE);
-
-        setXTheta(0,3.1416/2);
+        if(cur_instr.instr_mode == UTURN)
+            setXTheta(0,PI); 
+        else  
+        setXTheta(0,PI/2);
         
         if(cur_instr.instr_mode == RIGHT)
             spd = -spd;
