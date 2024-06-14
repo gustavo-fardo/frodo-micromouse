@@ -119,12 +119,13 @@ bool movement()
     switch (state)
     {
     case 0:
+        setPID(PID_STRAIGHT|PID_AUTO_STOP_X|PID_USE_TOF_SIDES);
         normalizeCounts();
         resetFinished();
         setX(getFrontX(getDir(),getX()));
         setY(getFrontY(getDir(),getY()));
 
-        setPID(PID_STRAIGHT|PID_AUTO_STOP_X|PID_USE_TOF_SIDES);
+        
         
         setXTheta(95,0);
     
