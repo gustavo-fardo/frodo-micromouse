@@ -1,6 +1,7 @@
 #include <states.h>
 #include <tof.h> 
 #include <position.h>
+#include <PID.h>
 #define NULO 0xFF
 uint8_t dfs_state = 0;
 DIRECTIONS last_dir = U;
@@ -57,12 +58,16 @@ bool dfsSearch()
         //ao chegar ao inicio terminar, se nao, volte para trás
         if(getX() == 0 && getY() == 0)
         {
-            dfs_state = 0;
+            dfs_state = 4;
             setInstruction(INPLACE_ROTATION,UTURN);
-            return true;
+            
         }
         goTo((DIRECTIONS) getCell(getX(),getY()));
-
+        break;
+    case 4:
+        dfs_state=0;
+        activatePID(false);
+        return true;
         break;
     default:
         break;
