@@ -8,7 +8,7 @@
 * @param size tamanho atual do array
 * @param value valor a ser adicionado no vetor
 */
-void push(uint8_t* array, uint8_t size, uint8_t value);
+void push(uint8_t* array, uint8_t& size, uint8_t value);
 
 /*
 * @name pop
@@ -16,4 +16,4 @@ void push(uint8_t* array, uint8_t size, uint8_t value);
 * @param array onde sera armazenado o valor
 * @param size tamanho atual do array
 */
-uint8_t pop(uint8_t* array, uint8_t size);
+uint8_t pop(uint8_t* array, uint8_t& size);
