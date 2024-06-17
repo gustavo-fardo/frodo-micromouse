@@ -189,9 +189,9 @@ bool rotation()
                 resetIntegrals();
                 resetFinished();
                 resetCounts();
-                setPID(PID_STRAIGHT |PID_AUTO_STOP_X);
+                setPID(PID_STRAIGHT |PID_AUTO_STOP_X|PID_USE_TOF_SIDES);
                 setVW(-200,0);
-                setXTheta(9,0);
+                setXTheta(12,0);
 
                 switch (cur_instr.instr_mode)
                 {
