@@ -20,7 +20,7 @@ bool executionAlgorithm()
             floodfill(createCoord(0,0),false);
             execution_state = 2;
         }
-        followFloodFill();
+        followFloodFill(false);
         break;
     case 2:
         if(getX() == 0 && getY() == 0)
@@ -38,6 +38,5 @@ bool executionAlgorithm()
         execution_state = 0;
         return true;
     }
-    //TODO execução
     return false;
 }

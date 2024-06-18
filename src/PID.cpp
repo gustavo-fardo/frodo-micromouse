@@ -130,7 +130,7 @@ void PID()
             count_right = REGULATOR_RIGHT*(-count_left+count_right)/2;
         }
         last_wall = cur_walls;
-        if((pid_control & PID_USE_TOF_FRONT) && wall_front && wall_count >=20)
+        if((pid_control & PID_USE_TOF_FRONT) && wall_front && wall_count >=0)
         {
             ethethan = -dist_front_left+dist_front_right;
             integral_theta += ethethan*0.01;

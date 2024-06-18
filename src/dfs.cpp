@@ -65,8 +65,8 @@ bool dfsSearch()
         goTo((DIRECTIONS) getCell(getX(),getY()));
         break;
     case 4:
-        dfs_state=0;
         activatePID(false);
+        dfs_state=0;
         return true;
         break;
     default:

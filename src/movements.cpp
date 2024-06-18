@@ -20,6 +20,7 @@ void setInstruction(CODES code ,MODES mode)
 {
     cur_instr.instr_code = code;
     cur_instr.instr_mode = mode;
+    two_instructions = false;
     state=0;
 }
 
@@ -119,7 +120,7 @@ bool movement()
     switch (state)
     {
     case 0:
-        setPID(PID_STRAIGHT|PID_AUTO_STOP_X|PID_USE_TOF_SIDES);
+        setPID(PID_STRAIGHT|PID_AUTO_STOP_X);
         
         normalizeCounts();
         resetFinished();
@@ -128,12 +129,12 @@ bool movement()
 
         
         
-        setXTheta(95,0);
+        setXTheta(15,0);
     
         if(cur_instr.instr_mode != FORWARDS)
             spd = -spd;
         setVW(spd,0);
-        state = 1;
+        state = 10;
         break;
     
     case 1:
@@ -148,13 +149,26 @@ bool movement()
             if(wallAt(U))
                 setPID(PID_STRAIGHT|PID_AUTO_STOP_X |PID_USE_TOF_FRONT);
             else
-                setPID(PID_STRAIGHT|PID_AUTO_STOP_X |PID_USE_TOF_SIDES);
+                setPID(PID_STRAIGHT|PID_AUTO_STOP_X|PID_USE_TOF_SIDES);
             
             state = 2;
         }
         break;
     case 2:
         return moveEnded();
+        break;
+    case 10:
+        if(moveEnded())
+        {
+
+            state = 1;
+            resetFinished();
+            setXTheta(100,0);
+            setVW(spd,0);
+            setPID(PID_STRAIGHT|PID_AUTO_STOP_X|PID_USE_TOF_SIDES);
+
+
+        }
         break;
     default:
         return true;
@@ -189,9 +203,9 @@ bool rotation()
                 resetIntegrals();
                 resetFinished();
                 resetCounts();
-                setPID(PID_STRAIGHT |PID_AUTO_STOP_X|PID_USE_TOF_SIDES);
+                setPID(PID_STRAIGHT |PID_AUTO_STOP_X);
                 setVW(-200,0);
-                setXTheta(12,0);
+                setXTheta(9,0);
 
                 switch (cur_instr.instr_mode)
                 {

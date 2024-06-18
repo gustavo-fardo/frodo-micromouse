@@ -1,7 +1,7 @@
 #ifndef _CONSTANTS
 #define _CONSTANTS
 // WALL DISTANCE SENSIBILITY CONSTANTS (mm)
-#define SIDE_WALL_DIST 140
+#define SIDE_WALL_DIST 130
 #define FRONT_WALL_DIST 160
 
 //Diameter Wheels

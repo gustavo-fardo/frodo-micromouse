@@ -5,6 +5,7 @@
 #include <vector.h>
 #include <PID.h>
 #include<floodfill.h>
+#include<leds.h>
 
 uint8_t floodfill_state = 0;
 bool floodfillSearch();
@@ -15,14 +16,16 @@ bool floodfillSearch()
     uint8_t center;
     switch(floodfill_state){
         case 0:
+
             if(getX() == SIZE/2  && getY() == SIZE/2){
                 floodfill_state = 1;
+            } else{
+                center = createCoord(SIZE/2, SIZE/2);
+                floodfill(center,true);
+                followFloodFill(true);
                 return false;
             }
-            center = createCoord(SIZE/2, SIZE/2);
-            floodfill(center);
-            followFloodFill();
-            break;
+            
         case 1:
             if(getX() == 0  && getY() == 0){
                 floodfill_state = 2;
@@ -30,8 +33,8 @@ bool floodfillSearch()
                 return false;
             }
             center = createCoord(0, 0);
-            floodfill(center);
-            followFloodFill();
+            floodfill(center,true);
+            followFloodFill(true);
             break;
         case 2:
             floodfill_state = 0;
@@ -44,23 +47,33 @@ bool floodfillSearch()
     return false;
 }
 // Preencha matriz
+uint8_t array[SIZE*SIZE], size=0, start = 0;
 void floodfill(uint8_t center, bool isValidUnexplored){
-    uint8_t array[SIZE*SIZE], size = 0;
+    size = 0;
+    start = 0;
+    
     for(uint8_t i = 0; i < SIZE; i++){
         for(uint8_t j = 0; j < SIZE; j++){
-            setCell(i, j, 255);
+            setCell(i, j, 0xFF);
         }
     }
     setCell(getXFromCoord(center), getYFromCoord(center), 0);
-    push(array, size, center);
-    while(size > 0){
-        uint8_t centroide = pop(array, size), isValid;
+    queue_push(array,&size,0,SIZE*SIZE);
+
+    while(size-start != 0){
+        uint8_t centroide=queue_pop(array,&start,SIZE*SIZE);
+        uint8_t isValid;
+        uint8_t xcent = getXFromCoord(centroide);
+        uint8_t ycent = getYFromCoord(centroide);
         for(uint8_t i = 0; i < 4; i++){
-            if(validAdjacentCell(&isValid, getXFromCoord(centroide), getYFromCoord(centroide), (DIRECTIONS)i ,isValidUnexplored) 
-            && isValid > getCell(getXFromCoord(centroide), getYFromCoord(centroide))){
-                uint8_t newCord = createCoord(getFrontX((DIRECTIONS)i, getXFromCoord(centroide)), getFrontY((DIRECTIONS)i, getYFromCoord(centroide)));
-                setCell(getXFromCoord(newCord), getXFromCoord(newCord), (getCell(getXFromCoord(centroide), getYFromCoord(centroide)) + 1));                
-                push(array, size, newCord);
+
+            if(validAdjacentCell(&isValid, xcent, ycent, (DIRECTIONS)i ,isValidUnexplored) 
+            && isValid > getCell(xcent, ycent)){
+                uint8_t xfront = getFrontX((DIRECTIONS)i,xcent);
+                uint8_t yfront = getFrontY((DIRECTIONS)i,ycent);
+                uint8_t newCord = createCoord(xfront, yfront);
+                setCell(xfront, yfront, getCell(xcent,ycent) + 1);                
+                queue_push(array,&size,newCord,SIZE*SIZE);
             }
         }
     }
@@ -74,7 +87,7 @@ void floodfill(uint8_t center, bool isValidUnexplored){
 
 void followFloodFill(bool validUnexplored)
 {
-    uint8_t value = 255, data;
+    uint8_t value = 0xFF, data;
     DIRECTIONS directions;
     for(uint8_t i = 0; i < 4; i++){
         if(validAdjacentCellLocal(&data,(DIRECTIONS)i,validUnexplored)){
@@ -83,6 +96,7 @@ void followFloodFill(bool validUnexplored)
                 value = data;
             } 
         }
+        
     }
     goTo(directions);
 
